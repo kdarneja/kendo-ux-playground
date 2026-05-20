@@ -1,9 +1,10 @@
 import type { ComponentType } from 'react';
 import type { SVGIcon } from '@progress/kendo-svg-icons';
-import { homeIcon, windowIcon } from '@progress/kendo-svg-icons';
+import { homeIcon, windowIcon, toolbarFloatIcon } from '@progress/kendo-svg-icons';
 
 import Home from './pages/Home';
 import StackedWindows from './pages/StackedWindows';
+import MapToolbars from './pages/MapToolbars';
 
 export type RouteDef = {
   path: string;
@@ -27,5 +28,12 @@ export const routes: RouteDef[] = [
     icon: windowIcon,
     description: 'Prototype for stacked Kendo Window patterns.',
     component: StackedWindows,
+  },
+  {
+    path: '/map-toolbars',
+    label: 'Map Toolbars',
+    icon: toolbarFloatIcon,
+    description: 'Floating Kendo Toolbar over a map with a popup tool palette.',
+    component: MapToolbars,
   },
 ];
