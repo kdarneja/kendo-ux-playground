@@ -1,0 +1,96 @@
+{
+  "_meta": {
+    "name": "Beghou Arc — Typography Tokens",
+    "version": "0.5",
+    "source": "beghou-non-kendo-designsystem.md §4 Typography",
+    "note": "Stopgap token file derived from the non-Kendo design system spec. Use until the Kendo ThemeBuilder export is ready, then replace with the ThemeBuilder variables.json. Pair with beghou-color-tokens.json — text colors are referenced there (brand.navy for body text on light surfaces)."
+  },
+
+  "fontFamily": {
+    "primary": "Inter",
+    "fallbackStack": "Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    "import": "https://rsms.me/inter/inter.css",
+    "googleFonts": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+    "npm": "@fontsource/inter",
+    "_note": "Inter only. Never substitute."
+  },
+
+  "weights": {
+    "light": 300,
+    "regular": 400,
+    "medium": 500,
+    "semibold": 600,
+    "bold": 700,
+    "_inAppUsage": "Arc apps use Regular (400) for body and Bold (700) for headings 4–6 and emphasis. Medium (500) appears in component-specific styles. Light (300) is marketing-only (Display sizes). SemiBold (600) is available but rarely used in Arc apps."
+  },
+
+  "letterSpacing": {
+    "default": 0,
+    "_note": "Letter-spacing is always 0. Arc does not use tracked letter-spacing anywhere."
+  },
+
+  "scale": {
+    "_note": "Full type scale from the spec. Sizes are absolute pixel values. Line heights are kept in the spec's original units (percentages for the scale, absolute pixels for component-specific styles).",
+
+    "display1": { "size": "112px", "weight": 300, "lineHeight": "120%", "use": "Marketing hero only" },
+    "display2": { "size": "98px", "weight": 300, "lineHeight": "120%", "use": "Marketing hero only" },
+    "display3": { "size": "84px", "weight": 300, "lineHeight": "120%", "use": "Marketing hero only" },
+    "display4": { "size": "70px", "weight": 300, "lineHeight": "120%", "use": "Marketing hero only" },
+
+    "heading1": { "size": "56px", "weight": 400, "lineHeight": "133%", "use": "Rare in-app" },
+    "heading2": { "size": "42px", "weight": 400, "lineHeight": "133%", "use": "Rare in-app" },
+    "heading3": { "size": "35px", "weight": 400, "lineHeight": "120%", "use": "Rare in-app" },
+
+    "heading4": { "size": "28px", "weight": 700, "lineHeight": "142%", "use": "Page titles — Arc app default" },
+    "heading5": { "size": "21px", "weight": 700, "lineHeight": "133%", "use": "Section titles — Arc app default" },
+    "heading6": { "size": "14px", "weight": 700, "lineHeight": "142%", "use": "Column/label headers — Arc app default" },
+
+    "baseTextXL": { "size": "20px", "weight": 400, "lineHeight": "150%", "use": "Lead paragraphs" },
+    "baseTextLG": { "size": "16px", "weight": 400, "lineHeight": "150%", "use": "Large body, card titles" },
+    "baseTextMD": { "size": "14px", "weight": 400, "lineHeight": "142%", "use": "Default body — Arc app default" },
+    "baseTextMDBold": { "size": "14px", "weight": 700, "lineHeight": "142%", "use": "Body emphasis" },
+    "baseTextSM": { "size": "12px", "weight": 400, "lineHeight": "150%", "use": "Helper text, labels, small body" },
+    "baseTextSMBold": { "size": "12px", "weight": 700, "lineHeight": "150%", "use": "Small emphasis" },
+    "baseTextXS": { "size": "10px", "weight": 400, "lineHeight": "100%", "use": "Chart axis labels, tiny meta" }
+  },
+
+  "componentStyles": {
+    "_note": "Specific text styles used inside named components. Reference these by name when building the matching component.",
+
+    "cardTitle": { "size": "16px", "weight": 400, "lineHeight": "20px", "usedIn": "Card headers" },
+    "cardSubtitle": { "size": "12px", "weight": 400, "lineHeight": "14px", "usedIn": "Card subheaders" },
+    "windowTitle": { "size": "16px", "weight": 400, "lineHeight": "20px", "usedIn": "Dialog/modal titles" },
+    "layoutHelper": {
+      "size": "10px",
+      "weight": 400,
+      "lineHeight": "160%",
+      "textTransform": "uppercase",
+      "usedIn": "Small category labels ('STATUS', 'LAST UPDATED'). Always Regular weight, never Bold."
+    },
+    "bottomNavText": { "size": "14px", "weight": 400, "lineHeight": "16px", "usedIn": "Mobile bottom nav" },
+    "chartLabel": { "size": "12px", "weight": 400, "lineHeight": "14px", "usedIn": "Chart labels" },
+    "chatMessageAuthor": { "size": "11px", "weight": 700, "lineHeight": "13px", "usedIn": "Chat author names" },
+    "chatMessageText": { "size": "14px", "weight": 400, "lineHeight": "18px", "usedIn": "Chat message bodies" },
+    "uploadStatus": { "size": "11px", "weight": 400, "lineHeight": "11px", "usedIn": "File upload status text" }
+  },
+
+  "arcAppDefaults": {
+    "_note": "When building an Arc app screen, default to these mappings unless the design says otherwise.",
+    "pageTitle": "heading4",
+    "sectionTitle": "heading5",
+    "columnLabel": "heading6",
+    "cardTitle": "componentStyles.cardTitle",
+    "body": "baseTextMD",
+    "helperText": "baseTextSM",
+    "buttonText": "baseTextMD"
+  },
+
+  "rules": {
+    "typeface": "Inter only. Never substitute another sans-serif.",
+    "letterSpacing": "Always 0. No tracking anywhere in Arc.",
+    "bodyColor": "Body text on light surfaces is always Beghou Navy (#020434 — see beghou-color-tokens.json brand.navy), never pure black, never grey.",
+    "allCaps": "All-caps labels use the layoutHelper style only (10px Regular). Never use Bold for all-caps.",
+    "headingWeight": "Heading 4–6 are Bold (700). Heading 1–3 are Regular (400) — they're inherited from marketing typography and rarely appropriate in-app.",
+    "responsiveScale": "Arc does not currently define responsive type scales — the same sizes apply across viewport widths. Card / page chrome adapts via spacing and layout, not type size."
+  }
+}

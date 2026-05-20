@@ -1,0 +1,168 @@
+{
+  "_meta": {
+    "name": "Beghou Arc — Color Tokens",
+    "version": "0.5",
+    "source": "beghou-non-kendo-designsystem.md §3 Color System",
+    "note": "Stopgap token file derived from the non-Kendo design system spec. Use until the Kendo ThemeBuilder export is ready, then replace with the ThemeBuilder variables.json. This file is library-agnostic — values can be mapped to Kendo Sass variables, CSS custom properties, or any other theme system."
+  },
+
+  "brand": {
+    "navy": {
+      "value": "#020434",
+      "usage": "Primary brand color. Used for primary buttons, active nav, body text on light surfaces, branded accents."
+    },
+    "navyHover": {
+      "value": "#16195B",
+      "usage": "Hover state for primary actions. The only 'hover variant' that exists in the system."
+    },
+    "onPrimary": {
+      "value": "#FFFFFF",
+      "usage": "Text and icons on navy backgrounds."
+    },
+    "magenta": {
+      "value": "#E60F65",
+      "usage": "BRAND ACCENT ONLY. Used in the Beghou logo's spark glyph and rarely in marketing surfaces (~5% of the visual field). NEVER use on UI — not for secondary buttons, links, interactive states, focus rings, or chart series. If a prototype needs a secondary action, it's an outlined navy button on transparent — never magenta."
+    }
+  },
+
+  "surface": {
+    "app": {
+      "value": "#FFFFFF",
+      "usage": "Main page background. The canvas everything sits on."
+    },
+    "card": {
+      "value": "#EDF0FA",
+      "usage": "Default card background — soft blue-tinted. Arc's signature surface for cards, dialog titlebars, and tinted regions."
+    },
+    "soft": {
+      "value": "#F7FBFF",
+      "usage": "Very light blue for subtle panels, notification banners, inactive states."
+    }
+  },
+
+  "neutral": {
+    "50": {
+      "value": "#F6F6F7",
+      "usage": "Lightest neutral. Subtle row hovers, alternating grid rows."
+    },
+    "100": {
+      "value": "#E8E8EC",
+      "usage": "Subtle backgrounds, muted surfaces, ChipList chip background, Solid Base chip fill."
+    },
+    "200": {
+      "value": "#C5C5CF",
+      "usage": "Borders, disabled backgrounds, dividers, ChipList chip hover/selected."
+    },
+    "900": {
+      "value": "#020434",
+      "usage": "Dark text and icons (same value as brand.navy — aliased here for neutral-scale references)."
+    }
+  },
+
+  "border": {
+    "formInput": {
+      "value": "rgba(2, 4, 52, 0.5)",
+      "cssVariable": "--border-form-input",
+      "usage": "Form input borders — Textbox, NumericTextbox, TextArea, DropDownList, ComboBox, AutoComplete, Multiselect, DropDownTree, DateInput, Checkbox (unchecked), RadioButton (unselected), Switch (off). 50% navy — darker than container borders so inputs read clearly on tinted surfaces."
+    },
+    "container": {
+      "value": "rgba(2, 4, 52, 0.08)",
+      "cssVariable": "--border-container",
+      "usage": "Card borders, dividers, separators, Dialog footer top borders, row separators. 8% navy — lighter than input borders so containers recede behind their contents."
+    },
+    "emphasized": {
+      "value": "rgba(2, 4, 52, 0.16)",
+      "cssVariable": "--border-emphasized",
+      "usage": "Stronger border for emphasized separators and specific focus-related treatments. 16% navy. Not interchangeable with formInput or container."
+    }
+  },
+
+  "semantic": {
+    "success": {
+      "main": "#11A13C",
+      "hover": "#0B6E29",
+      "onColor": "#FFFFFF",
+      "usage": "Positive status — Active, Approved, Complete. Text on success fill is white."
+    },
+    "warning": {
+      "main": "#FFA202",
+      "hover": "#E68A00",
+      "onColor": "#020434",
+      "usage": "Caution status — Pending Review, Attention Needed. Text on warning fill is NAVY (#020434), not white — white-on-orange fails WCAG AAA contrast."
+    },
+    "error": {
+      "main": "#FF0000",
+      "hover": "#CC0000",
+      "onColor": "#FFFFFF",
+      "usage": "Failure status — Failed, Rejected, Expired. Text on error fill is white."
+    },
+    "info": {
+      "main": "#3282FA",
+      "hover": "#1852B0",
+      "onColor": "#FFFFFF",
+      "usage": "Informational status — New, Updated, In Progress. Text on info fill is white. NOTE: when an Info MessageBox sits on a #EDF0FA Card surface, the blue contrast is weak — use brand.navy bg with white text (the MessageBox 'Primary' variant) instead."
+    }
+  },
+
+  "focusRing": {
+    "value": "rgba(2, 4, 52, 0.30)",
+    "usage": "2px navy at 30% opacity, 2px offset. Standard focus ring across all interactive elements."
+  },
+
+  "chart": {
+    "_note": "Charts only — never use these for UI elements (buttons, backgrounds, chrome). Default rotation: positions 1–5. Named accents for emphasis series.",
+
+    "series": [
+      { "position": 1, "name": "Dark Slate", "value": "#2F4F4F" },
+      { "position": 2, "name": "Deep Forest", "value": "#004D3F" },
+      { "position": 3, "name": "Teal", "value": "#008080" },
+      { "position": 4, "name": "Mid Blue", "value": "#1F77B4" },
+      { "position": 5, "name": "Periwinkle", "value": "#4363D8" },
+      { "position": 6, "name": "Slate Blue", "value": "#695ACD" },
+      { "position": 7, "name": "Beghou Magenta", "value": "#E60F65", "_note": "Brand accent — use rarely" },
+      { "position": 8, "name": "Purple", "value": "#800080" },
+      { "position": 9, "name": "Navy", "value": "#000080" },
+      { "position": 10, "name": "Violet", "value": "#911EB4" },
+      { "position": 11, "name": "Mauve", "value": "#AA4488" },
+      { "position": 12, "name": "Fuchsia", "value": "#BF01BF" },
+      { "position": 13, "name": "Medium Violet Red", "value": "#C71585" },
+      { "position": 14, "name": "Dusty Rose", "value": "#B02F60" },
+      { "position": 15, "name": "Wine", "value": "#771155" },
+      { "position": 16, "name": "Plum", "value": "#993399" },
+      { "position": 17, "name": "Indigo", "value": "#4B0082" },
+      { "position": 18, "name": "Red", "value": "#D00100" },
+      { "position": 19, "name": "Firebrick", "value": "#B22222" },
+      { "position": 20, "name": "Maroon", "value": "#800000" },
+      { "position": 21, "name": "Burnt Orange", "value": "#A64B00" },
+      { "position": 22, "name": "Dark Gold", "value": "#8C7501" },
+      { "position": 23, "name": "Sienna", "value": "#A0522D" },
+      { "position": 24, "name": "Saddle Brown", "value": "#8B4512" },
+      { "position": 25, "name": "Bronze", "value": "#9A6324" },
+      { "position": 26, "name": "Olive", "value": "#4C531F" },
+      { "position": 27, "name": "Dark Olive Green", "value": "#556B2F" },
+      { "position": 28, "name": "Green", "value": "#008001" },
+      { "position": 29, "name": "Black", "value": "#000000" },
+      { "position": 30, "name": "Grey", "value": "#767676" },
+      { "position": 31, "name": "Steel Blue", "value": "#124477" },
+      { "position": 32, "name": "Beghou Navy", "value": "#020434", "_note": "Available but causes confusion when UI also uses navy heavily — prefer other positions" },
+      { "position": 33, "name": "Coral", "value": "#FE7D4E" }
+    ],
+
+    "namedAccents": [
+      { "name": "Deep Blueprint", "value": "#002889", "usage": "Highlight/emphasis — 'this series matters' series" },
+      { "name": "Sky Pulse", "value": "#008DE7", "usage": "Highlight/emphasis" },
+      { "name": "Electric Aqua", "value": "#0CE6DF", "usage": "Highlight/emphasis" },
+      { "name": "Teal Current", "value": "#00AEA8", "usage": "Highlight/emphasis" },
+      { "name": "Green Signal", "value": "#61CE7D", "usage": "Highlight/emphasis" }
+    ]
+  },
+
+  "_rulesOfThumb": {
+    "primary": "Always navy. Never black, never blue.",
+    "magenta": "Logo only. Not for any UI surface — buttons, icons, hover, focus, chart series. If in doubt, leave magenta out.",
+    "cards": "#EDF0FA card surface is Arc's signature. Don't use white-on-white card stacking.",
+    "borders": "Form inputs at 50% navy, containers at 8% navy. Never solid grey.",
+    "formInputFill": "Always explicit #FFFFFF. Never transparent — inputs must be visible against tinted Card Surfaces and alternating grid rows.",
+    "semanticUsage": "Each semantic color has ONE shade. For pale backgrounds, use the solid color at low opacity (e.g., rgba(255,162,2,0.12) for a warning banner)."
+  }
+}

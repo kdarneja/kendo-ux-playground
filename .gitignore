@@ -1,0 +1,16 @@
+node_modules
+dist
+dist-ssr
+.DS_Store
+*.local
+.vite
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Local agent / IDE settings
+.claude/
+
+# Kendo license — keep out of git
+telerik-license.txt
+kendo-ui-license.txt
