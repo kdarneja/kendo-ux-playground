@@ -372,6 +372,48 @@ a {
   height: 100%;
 }
 
+/* ---------- Floating map toolbar (Map Toolbars page) ---------- */
+.map-toolbar-overlay {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.map-toolbar-overlay > .k-toolbar {
+  pointer-events: auto;
+  background: #ffffff;
+  border: 1px solid var(--border-container);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(2, 4, 52, 0.06);
+}
+
+.map-toolbar__anchor {
+  display: inline-flex;
+  align-items: center;
+}
+
+.map-toolbar__active-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.map-tool-popup {
+  background: #ffffff;
+  border: 1px solid var(--border-container);
+  border-radius: 4px;
+  box-shadow: 0 6px 16px rgba(2, 4, 52, 0.12);
+  padding: 4px;
+}
+
+.map-tool-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 /* ---------- Home launcher ---------- */
 .beghou-launcher-grid {
   display: grid;

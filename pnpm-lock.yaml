@@ -29,12 +29,21 @@ importers:
       '@progress/kendo-react-dialogs':
         specifier: 9.5.0
         version: 9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-react-buttons@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-popup-common@1.9.5)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@progress/kendo-react-dropdowns':
+        specifier: 9.5.0
+        version: 9.5.0(4098be1db4bc86f90beaa679b3ea53e7)
       '@progress/kendo-react-grid':
         specifier: ^9.4.0
         version: 9.5.0(9501b0c293620df874213904dc0893cf)
+      '@progress/kendo-react-inputs':
+        specifier: 9.5.0
+        version: 9.5.0(649fa4c09586ac1f0cb6528d7ec7a2af)
       '@progress/kendo-react-map':
         specifier: 9.5.0
         version: 9.5.0(@progress/kendo-drawing@1.25.2)(@progress/kendo-licensing@1.11.1)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-popup-common@1.9.5)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@progress/kendo-react-popup':
+        specifier: 9.5.0
+        version: 9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-popup-common@1.9.5)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@progress/kendo-svg-icons':
         specifier: ^4.0.0
         version: 4.9.2
