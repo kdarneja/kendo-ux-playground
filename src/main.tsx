@@ -24,9 +24,14 @@ if (!rootEl) {
   throw new Error('Root element #root not found');
 }
 
+// `import.meta.env.BASE_URL` follows Vite's `base` config. In dev it's '/',
+// in build it's '/kendo-ux-playground/' — BrowserRouter strips the trailing
+// slash itself, but Vite returns it with one. Trim so basename is canonical.
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 ReactDOM.createRoot(rootEl).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <App />
     </BrowserRouter>
   </React.StrictMode>,

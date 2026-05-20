@@ -1,7 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
+// `base` is '/' in dev so localhost works at the root, and the repo subpath
+// in build so GitHub Pages can resolve assets at /kendo-ux-playground/*.
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/kendo-ux-playground/' : '/',
   plugins: [react()],
   server: { port: 5173, open: true },
   // @progress/kendo-drawing and @progress/kendo-charts ship two ESM builds:
@@ -24,4 +27,4 @@ export default defineConfig({
     ],
   },
   build: { target: 'es2020' },
-});
+}));
