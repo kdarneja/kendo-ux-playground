@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Window, type WindowActionsEvent } from '@progress/kendo-react-dialogs';
-import { Button } from '@progress/kendo-react-buttons';
+import { Checkbox, type CheckboxChangeEvent } from '@progress/kendo-react-inputs';
 import { Map as KendoMap, MapLayers, MapTileLayer } from '@progress/kendo-react-map';
 import { Grid, GridColumn } from '@progress/kendo-react-grid';
 
 type Stage = 'DEFAULT' | 'MINIMIZED' | 'FULLSCREEN';
+type WinKey = 'zip' | 'hcp' | 'acc';
 
 type WinState = {
   stage: Stage;
-  open: boolean;
   left: number;
   top: number;
   width: number;
@@ -18,66 +18,48 @@ type WinState = {
 type MoveEvent = { left: number; top: number };
 
 const TITLEBAR_HEIGHT = 44;
-const CHIP_WIDTH = 220;
-const DOCK_MARGIN = 16;
-const CHIP_GAP = 8;
 const MIN_HEIGHT = 200;
-
-const initialState = (open: boolean): WinState => ({
-  stage: 'MINIMIZED',
-  open,
-  left: DOCK_MARGIN,
-  top: 0,
-  width: CHIP_WIDTH,
-  height: TITLEBAR_HEIGHT,
-});
+const GUTTER = 5;
 
 // Kendo Window has a bug where `top: 0` / `left: 0` are silently ignored
 // (`this.props.top || this.state.top` treats 0 as falsy). Use 1 instead.
 const ZERO_DODGE = 1;
 
-// 1. Corner chip docked at bottom-left of the map container.
-function dockPosition(slot: number, rect: DOMRect) {
-  return {
-    left: DOCK_MARGIN + slot * (CHIP_WIDTH + CHIP_GAP),
-    top: Math.max(0, Math.round(rect.height) - TITLEBAR_HEIGHT - DOCK_MARGIN),
-    width: CHIP_WIDTH,
-    height: TITLEBAR_HEIGHT,
-  };
+function slotPosition(slotIdx: number, totalSlots: number, stage: Stage, rect: DOMRect) {
+  const W = Math.round(rect.width);
+  const H = Math.max(MIN_HEIGHT, Math.round(rect.height));
+  const cellWidth = Math.max(2, Math.floor(W / totalSlots));
+  const left = Math.max(ZERO_DODGE, slotIdx * cellWidth + GUTTER);
+  const width = Math.max(2, cellWidth - 2 * GUTTER);
+
+  // FULLSCREEN: Kendo overrides controlled width/height from appendTo, so it
+  // covers the full parent regardless of what we return. We still emit a sane
+  // default for any frame between renders.
+  if (stage === 'FULLSCREEN') {
+    return { left: ZERO_DODGE, top: ZERO_DODGE, width: W, height: H };
+  }
+  if (stage === 'MINIMIZED') {
+    return {
+      left,
+      top: Math.max(ZERO_DODGE, H - TITLEBAR_HEIGHT),
+      width,
+      height: TITLEBAR_HEIGHT,
+    };
+  }
+  // DEFAULT: bottom half of slot (grows up from the minimized chip).
+  const halfH = Math.max(MIN_HEIGHT, Math.floor(H / 2));
+  return { left, top: Math.max(ZERO_DODGE, H - halfH), width, height: halfH };
 }
 
-// 2. Half height, full width, docked to the bottom of the page (viewport bottom).
-function halfPosition(rect: DOMRect, viewportH: number) {
-  const available = Math.max(MIN_HEIGHT * 2, viewportH - rect.top);
-  const half = Math.round(available / 2);
-  return {
-    left: ZERO_DODGE,
-    top: Math.round(available - half),
-    width: Math.round(rect.width),
-    height: half,
-  };
-}
+const NoButton = () => null;
 
-// 3. Full coverage — top of map area through to the viewport bottom.
-function fullPosition(rect: DOMRect, viewportH: number) {
-  return {
-    left: ZERO_DODGE,
-    top: ZERO_DODGE,
-    width: Math.round(rect.width),
-    height: Math.max(MIN_HEIGHT, Math.round(viewportH - rect.top)),
-  };
-}
-
-function positionForStage(
-  stage: Stage,
-  slot: number,
-  rect: DOMRect,
-  viewportH: number,
-) {
-  if (stage === 'MINIMIZED') return dockPosition(slot, rect);
-  if (stage === 'FULLSCREEN') return fullPosition(rect, viewportH);
-  return halfPosition(rect, viewportH);
-}
+const initialWin = (): WinState => ({
+  stage: 'MINIMIZED',
+  left: ZERO_DODGE,
+  top: ZERO_DODGE,
+  width: 200,
+  height: TITLEBAR_HEIGHT,
+});
 
 const ZIP_DATA = [
   { zip: '30122', terrId: 'T021', terrName: 'Marietta, GA', index: 17, estr_writer: 7, mkt_writer: 7, estr_c12m: '12,167', mkt_C12m: '27,905', stCity: 'Lithia Springs, GA', zipOut: '30122' },
@@ -100,23 +82,42 @@ const HCP_DATA = [
   { id: 112486, fname: 'DEREK', lname: 'ANSARI', decMkt: 3, mkt_roll12: 3010, ESTR_roll12: 1517, MENA_roll12: 244, PROF_roll12: 1249, Address1: '79 PEACH ORCHARD', City: 'MARIETTA', State: 'GA', zip: '30068', NPI: '1604572019' },
 ];
 
+const ACC_DATA = [
+  { origTerr: 'T049', origName: 'Atlanta N, GA', newTerr: 'T021', newName: 'Marietta, GA',  id: 94837,  lname: 'ABUNYEWA', fname: 'AMMA',     spec: 'IM',    decMkt: 7,  mkt_roll12: 11033.413,  ESTR_roll12: 4612.333,  MENA_roll12: 2455.5 },
+  { origTerr: 'T002', origName: 'Atlanta S, GA', newTerr: 'T049', newName: 'Atlanta S, GA', id: 102480, lname: 'HADLEY',   fname: 'PHILLIP',  spec: 'OBGYN', decMkt: 4,  mkt_roll12: 4986.598,   ESTR_roll12: 2092.503,  MENA_roll12: 1759.7 },
+  { origTerr: 'T002', origName: 'Atlanta S, GA', newTerr: 'T049', newName: 'Atlanta S, GA', id: 115549, lname: 'CALLAWAY', fname: 'JUAQUITA', spec: 'OBGYN', decMkt: 4,  mkt_roll12: 4639.307,   ESTR_roll12: 2766.083,  MENA_roll12: 1115.3 },
+  { origTerr: 'T002', origName: 'Atlanta S, GA', newTerr: 'T049', newName: 'Atlanta S, GA', id: 120151, lname: 'GAMBLE',   fname: 'KENDRA',   spec: 'OBGYN', decMkt: 10, mkt_roll12: 141963.436, ESTR_roll12: 32578.163, MENA_roll12: 42433.3 },
+  { origTerr: 'T002', origName: 'Atlanta S, GA', newTerr: 'T049', newName: 'Atlanta S, GA', id: 120151, lname: 'ANYAKWO',  fname: 'GERTRUDE', spec: 'OBGYN', decMkt: 5,  mkt_roll12: 5838.772,   ESTR_roll12: 1752.775,  MENA_roll12: 1569.0 },
+  { origTerr: 'T002', origName: 'Atlanta S, GA', newTerr: 'T049', newName: 'Atlanta S, GA', id: 124467, lname: 'GIBBS',    fname: 'LAURA',    spec: 'OBGYN', decMkt: 5,  mkt_roll12: 7751.609,   ESTR_roll12: 4273.612,  MENA_roll12: 2134.6 },
+  { origTerr: 'T049', origName: 'Atlanta N, GA', newTerr: 'T021', newName: 'Marietta, GA',  id: 128902, lname: 'BANERJEE', fname: 'NITIN',    spec: 'IM',    decMkt: 6,  mkt_roll12: 8421.330,   ESTR_roll12: 3198.402,  MENA_roll12: 1872.4 },
+];
+
 export default function StackedWindows() {
   const mapWrapperRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<KendoMap | null>(null);
   const [rect, setRect] = useState<DOMRect | null>(null);
-  const [viewportH, setViewportH] = useState<number>(
-    typeof window !== 'undefined' ? window.innerHeight : 900,
-  );
-  const [zip, setZip] = useState<WinState>(initialState(true));
-  const [hcp, setHcp] = useState<WinState>(initialState(false));
+
+  const [showHcp, setShowHcp] = useState(false);
+  const [showAcc, setShowAcc] = useState(false);
+
+  const [zip, setZip] = useState<WinState>(initialWin);
+  const [hcp, setHcp] = useState<WinState>(initialWin);
+  const [acc, setAcc] = useState<WinState>(initialWin);
+
+  const visibleSlots = useMemo<WinKey[]>(() => {
+    const s: WinKey[] = ['zip'];
+    if (showHcp) s.push('hcp');
+    if (showAcc) s.push('acc');
+    return s;
+  }, [showHcp, showAcc]);
+
+  const totalSlots = visibleSlots.length;
+  const slotOf = (key: WinKey) => visibleSlots.indexOf(key);
 
   useEffect(() => {
     const el = mapWrapperRef.current;
     if (!el) return;
-    const update = () => {
-      setRect(el.getBoundingClientRect());
-      setViewportH(window.innerHeight);
-    };
+    const update = () => setRect(el.getBoundingClientRect());
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
@@ -133,41 +134,31 @@ export default function StackedWindows() {
     if (rect) mapInstanceRef.current?.resize();
   }, [rect]);
 
-  // Re-snap minimized chips to their dock when the map size or slot order changes.
+  // Re-snap visible windows whenever the rect or slot layout changes.
   useEffect(() => {
     if (!rect) return;
-    setZip((s) => (s.stage === 'MINIMIZED' ? { ...s, ...dockPosition(0, rect) } : s));
-    setHcp((s) =>
-      s.stage === 'MINIMIZED'
-        ? { ...s, ...dockPosition(zip.open ? 1 : 0, rect) }
-        : s,
-    );
-  }, [rect, zip.open]);
-
-  // Re-snap non-minimized windows on viewport resize.
-  useEffect(() => {
-    if (!rect) return;
-    setZip((s) =>
-      s.stage !== 'MINIMIZED'
-        ? { ...s, ...positionForStage(s.stage, 0, rect, viewportH) }
-        : s,
-    );
-    setHcp((s) =>
-      s.stage !== 'MINIMIZED'
-        ? { ...s, ...positionForStage(s.stage, zip.open ? 1 : 0, rect, viewportH) }
-        : s,
-    );
-  }, [rect, viewportH, zip.open]);
+    const zipIdx = slotOf('zip');
+    setZip((s) => ({ ...s, ...slotPosition(zipIdx, totalSlots, s.stage, rect) }));
+    if (showHcp) {
+      const hcpIdx = slotOf('hcp');
+      setHcp((s) => ({ ...s, ...slotPosition(hcpIdx, totalSlots, s.stage, rect) }));
+    }
+    if (showAcc) {
+      const accIdx = slotOf('acc');
+      setAcc((s) => ({ ...s, ...slotPosition(accIdx, totalSlots, s.stage, rect) }));
+    }
+    // visibleSlots captures both checkbox states; rect captures size.
+  }, [rect, visibleSlots, totalSlots, showHcp, showAcc]);
 
   const onStage = (
     setter: React.Dispatch<React.SetStateAction<WinState>>,
-    slot: () => number,
+    key: WinKey,
   ) => (e: WindowActionsEvent) => {
     if (!e.state) return;
     const next = e.state as Stage;
     setter((s) => {
       if (!rect) return { ...s, stage: next };
-      return { ...s, stage: next, ...positionForStage(next, slot(), rect, viewportH) };
+      return { ...s, stage: next, ...slotPosition(slotOf(key), totalSlots, next, rect) };
     });
   };
 
@@ -176,27 +167,24 @@ export default function StackedWindows() {
       setter((s) => ({ ...s, left: e.left, top: e.top }));
     };
 
-  const toggleHcp = () => {
-    if (!rect) return;
-    setHcp((s) => {
-      if (s.open) return { ...s, open: false };
-      const slot = zip.open ? 1 : 0;
-      return { ...s, open: true, stage: 'MINIMIZED', ...dockPosition(slot, rect) };
-    });
-  };
-
-  const hcpSlot = () => (zip.open ? 1 : 0);
+  const onResize = (setter: React.Dispatch<React.SetStateAction<WinState>>) =>
+    (e: { left: number; top: number; width: number; height: number }) => {
+      setter((s) => ({ ...s, left: e.left, top: e.top, width: e.width, height: e.height }));
+    };
 
   return (
     <div className="beghou-page beghou-page--fill">
       <div className="beghou-toolbar">
-        <Button
-          themeColor="primary"
-          fillMode={hcp.open ? 'solid' : 'outline'}
-          onClick={toggleHcp}
-        >
-          {hcp.open ? 'Hide HCP' : 'Show HCP'}
-        </Button>
+        <Checkbox
+          label="HCP"
+          value={showHcp}
+          onChange={(e: CheckboxChangeEvent) => setShowHcp(Boolean(e.value))}
+        />
+        <Checkbox
+          label="Accounts"
+          value={showAcc}
+          onChange={(e: CheckboxChangeEvent) => setShowAcc(Boolean(e.value))}
+        />
       </div>
 
       <div className="map-container" ref={mapWrapperRef}>
@@ -207,9 +195,6 @@ export default function StackedWindows() {
             }}
             center={[30.2685, -97.7535]}
             zoom={14}
-            // Kendo Map's internal .k-map defaults to 600px height when given
-            // style:'100%' — the percentage doesn't propagate. Pass explicit
-            // pixel dimensions from the tracked container rect so it fills.
             style={{ width: Math.round(rect.width), height: Math.round(rect.height) }}
           >
             <MapLayers>
@@ -224,7 +209,7 @@ export default function StackedWindows() {
           </KendoMap>
         )}
 
-        {rect && zip.open && (
+        {rect && (
           <Window
             title="Zip ID"
             appendTo={mapWrapperRef.current ?? undefined}
@@ -235,10 +220,11 @@ export default function StackedWindows() {
             height={zip.height}
             modal={false}
             draggable
-            resizable={false}
-            onStageChange={onStage(setZip, () => 0)}
+            resizable
+            closeButton={NoButton}
+            onStageChange={onStage(setZip, 'zip')}
             onMove={onMove(setZip)}
-            onClose={() => setZip((s) => ({ ...s, open: false }))}
+            onResize={onResize(setZip)}
           >
             <Grid data={ZIP_DATA} style={{ height: '100%' }}>
               <GridColumn field="zip" title="Zip" width="100px" />
@@ -255,7 +241,7 @@ export default function StackedWindows() {
           </Window>
         )}
 
-        {rect && hcp.open && (
+        {rect && showHcp && (
           <Window
             title="HCP"
             appendTo={mapWrapperRef.current ?? undefined}
@@ -266,10 +252,11 @@ export default function StackedWindows() {
             height={hcp.height}
             modal={false}
             draggable
-            resizable={false}
-            onStageChange={onStage(setHcp, hcpSlot)}
+            resizable
+            closeButton={NoButton}
+            onStageChange={onStage(setHcp, 'hcp')}
             onMove={onMove(setHcp)}
-            onClose={() => setHcp((s) => ({ ...s, open: false }))}
+            onResize={onResize(setHcp)}
           >
             <Grid data={HCP_DATA} style={{ height: '100%' }}>
               <GridColumn field="id" title="id" width="100px" />
@@ -285,6 +272,40 @@ export default function StackedWindows() {
               <GridColumn field="State" title="State" width="80px" />
               <GridColumn field="zip" title="zip" width="90px" />
               <GridColumn field="NPI" title="NPI" width="130px" />
+            </Grid>
+          </Window>
+        )}
+
+        {rect && showAcc && (
+          <Window
+            title="Accounts"
+            appendTo={mapWrapperRef.current ?? undefined}
+            stage={acc.stage}
+            left={acc.left}
+            top={acc.top}
+            width={acc.width}
+            height={acc.height}
+            modal={false}
+            draggable
+            resizable
+            closeButton={NoButton}
+            onStageChange={onStage(setAcc, 'acc')}
+            onMove={onMove(setAcc)}
+            onResize={onResize(setAcc)}
+          >
+            <Grid data={ACC_DATA} style={{ height: '100%' }}>
+              <GridColumn field="origTerr" title="Original Terr" width="130px" />
+              <GridColumn field="origName" title="Original Name" width="150px" />
+              <GridColumn field="newTerr" title="New Terr" width="110px" />
+              <GridColumn field="newName" title="New Name" width="150px" />
+              <GridColumn field="id" title="ID" width="90px" />
+              <GridColumn field="lname" title="L Name" width="120px" />
+              <GridColumn field="fname" title="F Name" width="120px" />
+              <GridColumn field="spec" title="Spec" width="100px" />
+              <GridColumn field="decMkt" title="decMkt" width="90px" />
+              <GridColumn field="mkt_roll12" title="mkt_roll12" width="120px" />
+              <GridColumn field="ESTR_roll12" title="ESTR_roll12" width="120px" />
+              <GridColumn field="MENA_roll12" title="MENA_roll12" width="130px" />
             </Grid>
           </Window>
         )}
