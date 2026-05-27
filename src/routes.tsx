@@ -1,10 +1,11 @@
 import type { ComponentType } from 'react';
 import type { SVGIcon } from '@progress/kendo-svg-icons';
-import { homeIcon, windowIcon, toolbarFloatIcon } from '@progress/kendo-svg-icons';
+import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon } from '@progress/kendo-svg-icons';
 
 import Home from './pages/Home';
 import StackedWindows from './pages/StackedWindows';
 import MapToolbars from './pages/MapToolbars';
+import IconToggleButton from './pages/IconToggleButton';
 
 export type RouteDef = {
   path: string;
@@ -35,5 +36,12 @@ export const routes: RouteDef[] = [
     icon: toolbarFloatIcon,
     description: 'Floating Kendo Toolbar over a map with a popup tool palette.',
     component: MapToolbars,
+  },
+  {
+    path: '/icon-togglebutton',
+    label: 'Icon Togglebutton',
+    icon: volumeUpIcon,
+    description: 'Icon-only Kendo Button that swaps its icon between on/off states.',
+    component: IconToggleButton,
   },
 ];

@@ -9,7 +9,7 @@
 import { chromium } from 'playwright';
 
 const BASE = process.env.BASE ?? 'http://localhost:5173';
-const ROUTES = ['/', '/stacked-windows', '/map-toolbars'];
+const ROUTES = ['/', '/stacked-windows', '/map-toolbars', '/icon-togglebutton'];
 
 // Console noise we know is benign (favicon 404s, dev hot-reload chatter,
 // and a known React-StrictMode interaction with kendo-react-map's internal
