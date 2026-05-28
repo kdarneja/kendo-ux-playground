@@ -185,12 +185,12 @@ export default function StackedWindows() {
     <div className="beghou-page beghou-page--fill">
       <div className="beghou-toolbar">
         <Checkbox
-          label="HCP"
+          label="When HCP data is present"
           value={showHcp}
           onChange={(e: CheckboxChangeEvent) => setShowHcp(Boolean(e.value))}
         />
         <Checkbox
-          label="Accounts"
+          label="When Accounts data is present"
           value={showAcc}
           onChange={(e: CheckboxChangeEvent) => setShowAcc(Boolean(e.value))}
         />
