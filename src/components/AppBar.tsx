@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { SvgIcon } from '@progress/kendo-react-common';
 import {
   menuIcon,
@@ -46,7 +46,7 @@ export function AppBar({
             <SvgIcon icon={menuIcon} size="large" />
           </button>
         </div>
-        <span className="beghou-appbar__logo">Kendo Playground</span>
+        <Link to="/" className="beghou-appbar__logo">Kendo Playground</Link>
         <div className="beghou-appbar__divider" aria-hidden="true" />
         <span className="beghou-appbar__page-id" aria-label="Current page">
           {pageLabel}

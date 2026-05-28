@@ -218,9 +218,14 @@ export default function StackedWindows() {
           </KendoMap>
         )}
 
+        {/* Keys are prefixed with the window's identity so React never reuses
+            a Window across the three slots — e.g. when Accounts is enabled
+            its resetKey starts at 1 and would collide with HCP's just-bumped
+            key=1, causing React to remount HCP into Accounts' position with
+            HCP's preserved state (slot 1/2 sized 741px). */}
         {rect && (
           <Window
-            key={zip.resetKey}
+            key={`zip-${zip.resetKey}`}
             title="Zip ID"
             appendTo={mapWrapperRef.current ?? undefined}
             stage={zip.stage}
@@ -236,7 +241,7 @@ export default function StackedWindows() {
             onMove={onMove(setZip)}
             onResize={onResize(setZip)}
           >
-            <Grid data={ZIP_DATA} style={{ height: '100%' }}>
+            <Grid data={ZIP_DATA} size="small" className="compact-grid" style={{ height: '100%' }}>
               <GridColumn field="zip" title="Zip" width="100px" />
               <GridColumn field="terrId" title="Terr ID" width="100px" />
               <GridColumn field="terrName" title="Terr Name" width="160px" />
@@ -253,7 +258,7 @@ export default function StackedWindows() {
 
         {rect && showHcp && (
           <Window
-            key={hcp.resetKey}
+            key={`hcp-${hcp.resetKey}`}
             title="HCP"
             appendTo={mapWrapperRef.current ?? undefined}
             stage={hcp.stage}
@@ -269,7 +274,7 @@ export default function StackedWindows() {
             onMove={onMove(setHcp)}
             onResize={onResize(setHcp)}
           >
-            <Grid data={HCP_DATA} style={{ height: '100%' }}>
+            <Grid data={HCP_DATA} size="small" className="compact-grid" style={{ height: '100%' }}>
               <GridColumn field="id" title="id" width="100px" />
               <GridColumn field="fname" title="Fname" width="110px" />
               <GridColumn field="lname" title="Lname" width="120px" />
@@ -289,7 +294,7 @@ export default function StackedWindows() {
 
         {rect && showAcc && (
           <Window
-            key={acc.resetKey}
+            key={`acc-${acc.resetKey}`}
             title="Accounts"
             appendTo={mapWrapperRef.current ?? undefined}
             stage={acc.stage}
@@ -305,7 +310,7 @@ export default function StackedWindows() {
             onMove={onMove(setAcc)}
             onResize={onResize(setAcc)}
           >
-            <Grid data={ACC_DATA} style={{ height: '100%' }}>
+            <Grid data={ACC_DATA} size="small" className="compact-grid" style={{ height: '100%' }}>
               <GridColumn field="origTerr" title="Original Terr" width="130px" />
               <GridColumn field="origName" title="Original Name" width="150px" />
               <GridColumn field="newTerr" title="New Terr" width="110px" />
