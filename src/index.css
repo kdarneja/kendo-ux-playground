@@ -99,6 +99,11 @@ a {
   letter-spacing: 0;
   margin-left: 28px;
   line-height: 1;
+  text-decoration: none;
+}
+
+.beghou-appbar__logo:hover {
+  text-decoration: underline;
 }
 
 .beghou-appbar__divider {
@@ -370,6 +375,15 @@ a {
 .map-container .km-scroll-wrapper,
 .map-container .km-scroll-container {
   height: 100%;
+}
+
+/* 12px font for grids inside the stacked windows. Row spacing is handled
+   by Kendo's built-in `size="small"` prop on the Grid. */
+.compact-grid.k-grid,
+.compact-grid.k-grid .k-table-th,
+.compact-grid.k-grid .k-table-td,
+.compact-grid.k-grid td {
+  font-size: 12px;
 }
 
 /* ---------- Floating map toolbar (Map Toolbars page) ---------- */
