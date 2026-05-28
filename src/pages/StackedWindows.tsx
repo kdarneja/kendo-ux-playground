@@ -13,6 +13,12 @@ type WinState = {
   top: number;
   width: number;
   height: number;
+  // Bumped on slot-snap events (stage change, container resize, visibility
+  // toggle) so the Window remounts with fresh initial geometry. Kendo's
+  // componentDidUpdate only syncs props.left/top — width/height props are
+  // never written back to state, so a controlled approach ships stale state
+  // through onResize and collapses the window to its mount-time size.
+  resetKey: number;
 };
 
 type MoveEvent = { left: number; top: number };
@@ -59,6 +65,7 @@ const initialWin = (): WinState => ({
   top: ZERO_DODGE,
   width: 200,
   height: TITLEBAR_HEIGHT,
+  resetKey: 0,
 });
 
 const ZIP_DATA = [
@@ -135,17 +142,19 @@ export default function StackedWindows() {
   }, [rect]);
 
   // Re-snap visible windows whenever the rect or slot layout changes.
+  // Bumping resetKey forces a remount so the new initial geometry actually
+  // sticks — see WinState.resetKey for why a re-render alone isn't enough.
   useEffect(() => {
     if (!rect) return;
     const zipIdx = slotOf('zip');
-    setZip((s) => ({ ...s, ...slotPosition(zipIdx, totalSlots, s.stage, rect) }));
+    setZip((s) => ({ ...s, ...slotPosition(zipIdx, totalSlots, s.stage, rect), resetKey: s.resetKey + 1 }));
     if (showHcp) {
       const hcpIdx = slotOf('hcp');
-      setHcp((s) => ({ ...s, ...slotPosition(hcpIdx, totalSlots, s.stage, rect) }));
+      setHcp((s) => ({ ...s, ...slotPosition(hcpIdx, totalSlots, s.stage, rect), resetKey: s.resetKey + 1 }));
     }
     if (showAcc) {
       const accIdx = slotOf('acc');
-      setAcc((s) => ({ ...s, ...slotPosition(accIdx, totalSlots, s.stage, rect) }));
+      setAcc((s) => ({ ...s, ...slotPosition(accIdx, totalSlots, s.stage, rect), resetKey: s.resetKey + 1 }));
     }
     // visibleSlots captures both checkbox states; rect captures size.
   }, [rect, visibleSlots, totalSlots, showHcp, showAcc]);
@@ -157,8 +166,8 @@ export default function StackedWindows() {
     if (!e.state) return;
     const next = e.state as Stage;
     setter((s) => {
-      if (!rect) return { ...s, stage: next };
-      return { ...s, stage: next, ...slotPosition(slotOf(key), totalSlots, next, rect) };
+      if (!rect) return { ...s, stage: next, resetKey: s.resetKey + 1 };
+      return { ...s, stage: next, ...slotPosition(slotOf(key), totalSlots, next, rect), resetKey: s.resetKey + 1 };
     });
   };
 
@@ -211,13 +220,14 @@ export default function StackedWindows() {
 
         {rect && (
           <Window
+            key={zip.resetKey}
             title="Zip ID"
             appendTo={mapWrapperRef.current ?? undefined}
             stage={zip.stage}
-            left={zip.left}
-            top={zip.top}
-            width={zip.width}
-            height={zip.height}
+            initialLeft={zip.left}
+            initialTop={zip.top}
+            initialWidth={zip.width}
+            initialHeight={zip.height}
             modal={false}
             draggable
             resizable
@@ -243,13 +253,14 @@ export default function StackedWindows() {
 
         {rect && showHcp && (
           <Window
+            key={hcp.resetKey}
             title="HCP"
             appendTo={mapWrapperRef.current ?? undefined}
             stage={hcp.stage}
-            left={hcp.left}
-            top={hcp.top}
-            width={hcp.width}
-            height={hcp.height}
+            initialLeft={hcp.left}
+            initialTop={hcp.top}
+            initialWidth={hcp.width}
+            initialHeight={hcp.height}
             modal={false}
             draggable
             resizable
@@ -278,13 +289,14 @@ export default function StackedWindows() {
 
         {rect && showAcc && (
           <Window
+            key={acc.resetKey}
             title="Accounts"
             appendTo={mapWrapperRef.current ?? undefined}
             stage={acc.stage}
-            left={acc.left}
-            top={acc.top}
-            width={acc.width}
-            height={acc.height}
+            initialLeft={acc.left}
+            initialTop={acc.top}
+            initialWidth={acc.width}
+            initialHeight={acc.height}
             modal={false}
             draggable
             resizable
