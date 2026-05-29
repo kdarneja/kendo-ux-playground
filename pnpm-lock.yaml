@@ -41,6 +41,9 @@ importers:
       '@progress/kendo-react-map':
         specifier: 9.5.0
         version: 9.5.0(@progress/kendo-drawing@1.25.2)(@progress/kendo-licensing@1.11.1)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-popup-common@1.9.5)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@progress/kendo-react-notification':
+        specifier: ^9.5.0
+        version: 9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@progress/kendo-react-popup':
         specifier: 9.5.0
         version: 9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-popup-common@1.9.5)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -540,6 +543,15 @@ packages:
       '@progress/kendo-licensing': ^1.5.0
       '@progress/kendo-react-common': 9.5.0
       '@progress/kendo-react-popup': 9.5.0
+      '@progress/kendo-svg-icons': ^4.0.0
+      react: ^16.8.2 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+
+  '@progress/kendo-react-notification@9.5.0':
+    resolution: {integrity: sha512-M4JF+HDYg9rjxI9N8Z/FPajkmlQyfSWPhD/2Vzbu8x1GZ+LePwgNdTDxKpVY42Y3uIYcTr93Mbs7J0nJxytZIA==}
+    peerDependencies:
+      '@progress/kendo-licensing': ^1.5.0
+      '@progress/kendo-react-common': 9.5.0
       '@progress/kendo-svg-icons': ^4.0.0
       react: ^16.8.2 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
       react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
@@ -1534,6 +1546,15 @@ snapshots:
       '@progress/kendo-licensing': 1.11.1
       '@progress/kendo-react-common': 9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@progress/kendo-react-popup': 9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-popup-common@1.9.5)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@progress/kendo-svg-icons': 4.9.2
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  '@progress/kendo-react-notification@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-react-common@9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@progress/kendo-licensing': 1.11.1
+      '@progress/kendo-react-common': 9.5.0(@progress/kendo-licensing@1.11.1)(@progress/kendo-svg-icons@4.9.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@progress/kendo-svg-icons': 4.9.2
       prop-types: 15.8.1
       react: 18.3.1
