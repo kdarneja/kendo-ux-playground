@@ -1,11 +1,12 @@
 import type { ComponentType } from 'react';
 import type { SVGIcon } from '@progress/kendo-svg-icons';
-import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon } from '@progress/kendo-svg-icons';
+import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon, gridLayoutIcon } from '@progress/kendo-svg-icons';
 
 import Home from './pages/Home';
 import StackedWindows from './pages/StackedWindows';
 import MapToolbars from './pages/MapToolbars';
 import IconToggleButton from './pages/IconToggleButton';
+import AlignmentManageViews from './pages/AlignmentManageViews';
 
 export type RouteDef = {
   path: string;
@@ -25,23 +26,30 @@ export const routes: RouteDef[] = [
   },
   {
     path: '/stacked-windows',
-    label: 'Stacked Windows',
+    label: 'Alignment-Map Windows',
     icon: windowIcon,
     description: 'Prototype for stacked Kendo Window patterns.',
     component: StackedWindows,
   },
   {
     path: '/map-toolbars',
-    label: 'Map Toolbars',
+    label: 'Alignment-Map Toolbar',
     icon: toolbarFloatIcon,
     description: 'Floating Kendo Toolbar over a map with a popup tool palette.',
     component: MapToolbars,
   },
   {
     path: '/icon-togglebutton',
-    label: 'Icon Togglebutton',
+    label: 'Alignment-Quick Align Toggle',
     icon: volumeUpIcon,
     description: 'Icon-only Kendo Button that swaps its icon between on/off states.',
     component: IconToggleButton,
+  },
+  {
+    path: '/alignment-manage-views',
+    label: 'Alignment-Manage Views',
+    icon: gridLayoutIcon,
+    description: 'Manage saved territory alignment views.',
+    component: AlignmentManageViews,
   },
 ];
