@@ -704,40 +704,20 @@ a {
 }
 
 /* ---------- Calendar page ---------- */
+/* Full bleed: white app area, no card framing. The border lives on the
+   scheduler only. */
 .cal-page {
   /* Let the scheduler own the scroll; the page itself doesn't scroll. */
   overflow: hidden;
-  /* Gray app area behind the white card, with a 10px gutter all around
-     (overrides .beghou-page's 24px padding for this page). */
-  background: #f1f1f1;
-  padding: 10px;
 }
 
-/* White bordered card framing the filter bar + scheduler. The card supplies
-   the single outer border (border-alt); inner elements that touch its edges
-   drop their own borders so lines never double up. */
-.cal-card {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  background: var(--beghou-surface-app);
-  border: 1px solid var(--beghou-border-alt);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-/* Filter bar: label-over-control fields, Reset, then Create pushed right.
-   White background, separated from the scheduler by an alt border. */
+/* Filter bar: label-over-control fields, Reset, then Create pushed right. */
 .cal-filters {
   display: flex;
   align-items: flex-end;
   gap: 16px;
   flex-wrap: wrap;
   flex-shrink: 0;
-  padding: 16px;
-  background: var(--beghou-surface-app);
-  border-bottom: 1px solid var(--beghou-border-alt);
 }
 
 .cal-field {
@@ -787,13 +767,19 @@ a {
 .cal-scheduler-wrap {
   flex: 1;
   min-height: 0;
+  border: 1px solid var(--beghou-border-alt);
+  border-radius: 4px;
   overflow: hidden;
+  /* Elevation-4 shadow on the whole calendar control so it reads as a raised
+     surface. (A shadow on the footer was clipped by this overflow:hidden and
+     only cast downward, so it never showed.) */
+  box-shadow: var(--kendo-elevation-4);
 }
 .cal-scheduler-wrap .k-scheduler {
   height: 100%;
   border: 0;
   /* Drive the scheduler's internal grid lines + toolbar separators to the alt
-     border so every line in the card matches. */
+     border so every line matches the outer border. */
   --kendo-color-border: var(--beghou-border-alt);
 }
 /* kendo-theme-default v11 doesn't drive the month layout's flex fill for the
