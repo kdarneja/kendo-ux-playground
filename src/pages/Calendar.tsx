@@ -330,8 +330,6 @@ export default function Calendar() {
 
   return (
     <div className="beghou-page beghou-page--fill cal-page">
-      {/* White bordered card framing the whole calendar module for readability */}
-      <div className="cal-card">
       {/* Filter bar (mirrors Figma; only Search is wired) */}
       <div className="cal-filters">
         <label className="cal-field">
@@ -427,7 +425,6 @@ export default function Calendar() {
           <WeekView />
           <MonthView />
         </Scheduler>
-      </div>
       </div>
 
       {/* Slide-out detail panel (docked left, slides left→right) */}
