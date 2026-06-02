@@ -1,12 +1,13 @@
 import type { ComponentType } from 'react';
 import type { SVGIcon } from '@progress/kendo-svg-icons';
-import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon, gridLayoutIcon } from '@progress/kendo-svg-icons';
+import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon, gridLayoutIcon, calendarIcon } from '@progress/kendo-svg-icons';
 
 import Home from './pages/Home';
 import StackedWindows from './pages/StackedWindows';
 import MapToolbars from './pages/MapToolbars';
 import IconToggleButton from './pages/IconToggleButton';
 import AlignmentManageViews from './pages/AlignmentManageViews';
+import Calendar from './pages/Calendar';
 
 export type RouteDef = {
   path: string;
@@ -51,5 +52,12 @@ export const routes: RouteDef[] = [
     icon: gridLayoutIcon,
     description: 'Manage saved territory alignment views.',
     component: AlignmentManageViews,
+  },
+  {
+    path: '/calendar',
+    label: 'Calendar',
+    icon: calendarIcon,
+    description: 'Shared commercialization calendar for sales teams, built on the Kendo Scheduler.',
+    component: Calendar,
   },
 ];

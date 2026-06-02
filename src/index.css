@@ -702,3 +702,308 @@ a {
   z-index: 20000;
   align-items: center;
 }
+
+/* ---------- Calendar page ---------- */
+.cal-page {
+  /* Let the scheduler own the scroll; the page itself doesn't scroll. */
+  overflow: hidden;
+  /* Gray app area behind the white card, with a 10px gutter all around
+     (overrides .beghou-page's 24px padding for this page). */
+  background: #f1f1f1;
+  padding: 10px;
+}
+
+/* White bordered card framing the filter bar + scheduler. The card supplies
+   the single outer border (border-alt); inner elements that touch its edges
+   drop their own borders so lines never double up. */
+.cal-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--beghou-surface-app);
+  border: 1px solid var(--beghou-border-alt);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Filter bar: label-over-control fields, Reset, then Create pushed right.
+   White background, separated from the scheduler by an alt border. */
+.cal-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  padding: 16px;
+  background: var(--beghou-surface-app);
+  border-bottom: 1px solid var(--beghou-border-alt);
+}
+
+.cal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cal-field__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--beghou-navy);
+}
+
+/* Give the controls sensible, consistent widths. */
+.cal-field .k-input,
+.cal-field .k-dropdownlist {
+  width: 180px;
+}
+.cal-field:first-child .k-input {
+  width: 220px;
+}
+
+.cal-search-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--beghou-navy);
+  opacity: 0.6;
+  padding-left: 4px;
+}
+.cal-search-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Reset sits just after the fields; Create is pushed to the far right. */
+.cal-reset {
+  margin-bottom: 0;
+}
+.cal-create {
+  margin-left: auto;
+}
+
+/* Scheduler fills the remaining height so month rows grow taller and fit
+   more events per cell before the built-in "..." overflow appears. */
+.cal-scheduler-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.cal-scheduler-wrap .k-scheduler {
+  height: 100%;
+  border: 0;
+  /* Drive the scheduler's internal grid lines + toolbar separators to the alt
+     border so every line in the card matches. */
+  --kendo-color-border: var(--beghou-border-alt);
+}
+/* kendo-theme-default v11 doesn't drive the month layout's flex fill for the
+   v9.5 Scheduler markup, so the week rows fall back to a fixed ~100px and
+   leave dead space below the grid. The body's week rows are already
+   `flex: 1 1 100%`, so giving the body a definite filled height (monthview
+   minus the 38px day-name header) lets them grow to fill the viewport. This
+   must be present at mount so Kendo measures the taller cells and computes
+   the "..." overflow against them. */
+.cal-scheduler-wrap .k-scheduler-monthview .k-scheduler-body {
+  height: calc(100% - 38px);
+}
+
+/* Scheduler toolbar buttons: medium outline. The selected view (Month) stays
+   solid navy; everything else reads as a white outline button. */
+.cal-scheduler-wrap .k-scheduler-toolbar .k-button {
+  background: var(--beghou-surface-app);
+  border: 1px solid var(--border-form-input);
+  color: var(--beghou-navy);
+}
+.cal-scheduler-wrap .k-scheduler-toolbar .k-button:hover {
+  background: var(--beghou-neutral-100);
+  border-color: var(--beghou-navy);
+}
+.cal-scheduler-wrap .k-scheduler-toolbar .k-button.k-selected,
+.cal-scheduler-wrap .k-scheduler-toolbar .k-button.k-selected:hover {
+  background: var(--beghou-navy);
+  border-color: var(--beghou-navy);
+  color: var(--beghou-on-navy);
+}
+
+/* Event pills get a 3px gap on the right so adjacent-day events don't meld
+   into the next cell. The fill is inset via a transparent right border so the
+   absolute width Kendo sets stays intact. */
+.cal-scheduler-wrap .k-event {
+  border-right: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+/* ----- Slide-out event detail panel -----
+   Docked against the drawer rail; animates in left→right. Sits below the
+   AppBar (z 1100) and the nav drawer (z 1050) so neither is occluded. */
+.cal-detail {
+  position: fixed;
+  top: 56px;
+  bottom: 0;
+  left: 49px;
+  width: 30vw;
+  min-width: 340px;
+  max-width: 560px;
+  background: #ffffff;
+  border-right: 1px solid var(--border-container);
+  box-shadow: 6px 0 24px rgba(2, 4, 52, 0.16);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(-110%);
+  transition: transform 220ms ease;
+  pointer-events: none;
+}
+.cal-detail--open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.cal-detail__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 16px 16px 24px;
+  background: var(--beghou-surface-card);
+  border-bottom: 1px solid var(--border-container);
+  flex-shrink: 0;
+}
+.cal-detail__title {
+  flex: 1;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--beghou-navy);
+}
+.cal-detail__close {
+  flex-shrink: 0;
+}
+
+.cal-detail__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 24px 32px;
+}
+.cal-detail__date {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--beghou-navy);
+}
+.cal-detail__section-label {
+  margin-top: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--beghou-navy);
+  opacity: 0.6;
+}
+.cal-detail__desc {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--beghou-navy);
+}
+.cal-detail__desc p {
+  margin: 0 0 12px;
+}
+.cal-detail__desc p:last-child {
+  margin-bottom: 0;
+}
+
+/* ----- Add to Calendar dialog ----- */
+/* Design-system chrome to match the Manage Views dialog: tinted header +
+   footer, bold navy title. */
+.cal-add-dialog .k-dialog-titlebar {
+  background: var(--beghou-surface-card);
+  border-bottom: 1px solid var(--border-container);
+  padding-block: 14px;
+}
+.cal-add-dialog .k-dialog-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--beghou-navy);
+}
+.cal-add-dialog .k-dialog-actions {
+  background: var(--beghou-surface-card);
+  border-top: 1px solid var(--border-container);
+  padding: 12px 16px;
+  margin: 0;
+  align-items: center;
+}
+/* Secondary outline buttons read the brand navy (stock theme bakes a coral). */
+.cal-add-dialog .k-button-outline {
+  color: var(--beghou-navy);
+  border-color: var(--beghou-navy);
+  background: var(--beghou-surface-app);
+}
+.cal-add-dialog .k-button-outline:hover {
+  color: var(--beghou-on-navy);
+  background: var(--beghou-navy);
+  border-color: var(--beghou-navy);
+}
+
+/* "* Required Field" note sits left of the action buttons. */
+.cal-required {
+  margin-right: auto;
+  font-size: 13px;
+  color: var(--beghou-navy);
+}
+
+.cal-add-chooser {
+  padding: 8px 0 4px;
+  min-width: 360px;
+}
+.cal-placeholder {
+  padding: 20px 0;
+  min-width: 360px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--beghou-navy);
+}
+.cal-confirm-text {
+  margin: 4px 0 8px;
+  font-size: 14px;
+  color: var(--beghou-navy);
+}
+
+.cal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 0;
+  min-width: 360px;
+}
+.cal-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+.cal-form__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--beghou-navy);
+}
+.cal-form__field .k-input,
+.cal-form__field .k-picker,
+.cal-form__field .k-dropdownlist,
+.cal-form__field .k-datepicker,
+.cal-form__field .k-datetimepicker,
+.cal-form__field .k-textarea {
+  width: 100%;
+}
+
+/* Half Day checkbox: outline style to match the outline inputs — white fill
+   with a form-input border when unchecked, navy when checked. */
+.cal-add-dialog .k-checkbox {
+  background-color: var(--beghou-surface-app);
+  border-color: var(--border-form-input);
+}
+.cal-add-dialog .k-checkbox:checked,
+.cal-add-dialog .k-checkbox.k-checked {
+  background-color: var(--beghou-navy);
+  border-color: var(--beghou-navy);
+}
