@@ -60,6 +60,8 @@ export function applyBeghouTheme(): void {
     '--beghou-neutral-100': colors.neutral['100'].value,
     '--beghou-neutral-200': colors.neutral['200'].value,
     '--beghou-focus-ring': colors.focusRing.value,
+    // Alt border: the more visible container border used to frame white cards.
+    '--beghou-border-alt': colors.border.emphasized.value,
   };
 
   for (const [name, value] of Object.entries(vars)) {
