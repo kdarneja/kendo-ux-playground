@@ -24,6 +24,7 @@
     "@progress/kendo-react-dialogs": "9.5.0",
     "@progress/kendo-react-dropdowns": "9.5.0",
     "@progress/kendo-react-form": "9.5.0",
+    "@progress/kendo-react-gantt": "9.5.0",
     "@progress/kendo-react-grid": "^9.4.0",
     "@progress/kendo-react-inputs": "9.5.0",
     "@progress/kendo-react-intl": "9.5.0",

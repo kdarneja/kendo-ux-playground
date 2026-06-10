@@ -993,3 +993,305 @@ a {
   background-color: var(--beghou-navy);
   border-color: var(--beghou-navy);
 }
+
+/* ============================================================================
+   Launch Planning (Systems Roadmap) — Kendo Gantt
+   ============================================================================ */
+
+.lp-page {
+  overflow: hidden;
+  gap: 10px;
+}
+
+/* Intro line + primary actions */
+.lp-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-shrink: 0;
+}
+.lp-intro {
+  min-width: 0;
+}
+/* Headline on one line (responsive: wraps only when the row is too narrow). */
+.lp-subtitle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--beghou-navy);
+}
+/* Source sits on its own line below, in design-system light grey. */
+.lp-source {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--beghou-neutral-200);
+}
+.lp-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Filter row */
+.lp-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  /* Light grey divider separating the intro/actions from the filters. */
+  border-top: 1px solid var(--beghou-neutral-200);
+  padding-top: 12px;
+}
+.lp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lp-field__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--beghou-navy);
+}
+.lp-field .k-dropdownlist {
+  width: 180px;
+}
+.lp-field .k-datepicker {
+  width: 160px;
+}
+.lp-reset {
+  margin-bottom: 0;
+}
+
+/* Status ButtonGroup: selected segment reads solid navy. */
+.lp-filters .k-button-group .k-button.k-selected {
+  background: var(--beghou-navy);
+  border-color: var(--beghou-navy);
+  color: var(--beghou-on-navy);
+}
+
+/* Sync status, pushed to the far right. */
+.lp-sync {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-bottom: 2px;
+}
+.lp-sync__text {
+  font-size: 12px;
+  color: rgba(2, 4, 52, 0.55);
+}
+.lp-sync__btn {
+  color: var(--beghou-navy);
+  font-weight: 500;
+}
+
+/* Reset | Legend separator: a thin vertical rule pinned to the bottom of the
+   filter row so it lines up with the Reset button and Legend trigger (the row
+   is taller because the labelled fields stack a label above their control). */
+.lp-sep {
+  align-self: flex-end;
+  width: 1px;
+  height: 32px;
+  background: var(--beghou-neutral-200);
+}
+.lp-legend-trigger {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: default;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--beghou-navy);
+  height: 32px;
+  outline: none;
+}
+.lp-legend-trigger .k-svg-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Phase legend, now shown in the hover popover (compact vertical list). */
+.lp-legend-pop {
+  background: var(--beghou-surface-app);
+  border: 1px solid var(--border-container);
+  border-radius: 4px;
+  box-shadow: var(--kendo-elevation-4);
+}
+.lp-legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--beghou-navy);
+}
+.lp-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.lp-legend__swatch {
+  width: 14px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.lp-legend__swatch--gate {
+  width: 3px;
+  height: 14px;
+  border-radius: 1px;
+}
+
+/* Gantt frame */
+.lp-gantt-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--beghou-border-alt);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: var(--kendo-elevation-4);
+  /* Breathing room below the chart so it isn't flush with the viewport edge. */
+  margin-bottom: 5px;
+}
+.lp-gantt {
+  height: 100%;
+  border: 0;
+  /* All internal grid lines (row + column separators) use the light grey
+     #E8E8EC (neutral-100). */
+  --kendo-color-border: var(--beghou-neutral-100);
+}
+/* Ensure every row carries the light grey bottom divider. */
+.lp-gantt .k-grid-content .k-table-row > td {
+  border-bottom: 1px solid var(--beghou-neutral-100);
+}
+
+/* Header band: Beghou navy with white column names (mirrors the wireframe's
+   dark timeline header). Covers the "FUNCTION / SYSTEM" column header and the
+   year/month timeline header cells. */
+.lp-gantt .k-grid-header,
+.lp-gantt .k-grid-header .k-table-th,
+.lp-gantt .k-grid-header .k-header,
+.lp-gantt .k-grid-header-sticky {
+  background: var(--beghou-navy) !important;
+  color: var(--beghou-on-navy) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+.lp-gantt .k-grid-header .k-column-title,
+.lp-gantt .k-grid-header .k-link {
+  color: var(--beghou-on-navy) !important;
+  font-weight: 600;
+}
+
+/* Hide the Gantt toolbar (we provide our own action/filter rows). */
+.lp-gantt .k-gantt-toolbar,
+.lp-gantt .k-toolbar {
+  display: none;
+}
+
+/* Task bars: thinner, rounded, no internal text/progress fill. The per-task
+   gradient is injected from the component as background. */
+.lp-gantt .k-task-single {
+  height: 16px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.lp-gantt .k-task-single .k-task-content,
+.lp-gantt .k-task-single .k-task-complete {
+  display: none;
+}
+/* Function summary bars are hidden so group rows read as section bands. */
+.lp-gantt .k-task.k-task-summary {
+  display: none !important;
+}
+
+/* Group (function) rows: dark navy band spanning label + timeline. The first
+   column is a sticky cell with its own opaque background, so it needs the
+   override too (otherwise white label text sits on the light surface). */
+.lp-gantt .lp-group-row {
+  background: var(--beghou-navy);
+}
+.lp-gantt .lp-group-row > td,
+.lp-gantt .lp-group-row > td.k-grid-content-sticky {
+  background: var(--beghou-navy) !important;
+}
+/* Lift the navy band above the .k-gantt-columns grid (z-index 0) so the
+   vertical month lines don't cut through the parent rows. */
+.lp-gantt .lp-group-row > td {
+  position: relative;
+  z-index: 1;
+}
+.lp-gantt .lp-group-row td,
+.lp-gantt .lp-group-row .k-link,
+.lp-gantt .lp-group-row .k-cell-inner {
+  color: var(--beghou-on-navy);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.lp-gantt .lp-group-row .k-icon,
+.lp-gantt .lp-group-row .k-svg-icon,
+.lp-gantt .lp-group-row .k-treelist-toggle {
+  color: var(--beghou-on-navy);
+  fill: var(--beghou-on-navy);
+}
+
+/* System rows: 12px label text. */
+.lp-gantt .lp-system-row td,
+.lp-gantt .lp-system-row .k-link,
+.lp-gantt .lp-system-row .k-cell-inner {
+  font-size: 12px;
+}
+
+/* Alternate row coloring. Group rows keep their navy band (set with
+   !important above). */
+.lp-gantt .lp-system-row.k-alt > td {
+  background: var(--beghou-neutral-50);
+}
+
+/* Per-system label-cell shade (the configurable color behind "MSL Platform"
+   etc.). Wins over zebra on the first column via !important; the sticky cell
+   has its own opaque background, so !important is required there too. */
+.lp-gantt .lp-shade-0 > td:first-child { background: #e1f0fc !important; }
+.lp-gantt .lp-shade-1 > td:first-child { background: #e4f6e9 !important; }
+.lp-gantt .lp-shade-2 > td:first-child { background: #fbe3e3 !important; }
+.lp-gantt .lp-shade-3 > td:first-child { background: #fcf3d4 !important; }
+
+/* Launch-gate vertical reference lines, injected into the Gantt scroll grid.
+   Each .lp-gate gets its left/top/height inline from the overlay effect. */
+.lp-gates {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  /* Foreground: above the task bars and dependency layer. */
+  z-index: 5;
+}
+.lp-gate {
+  position: absolute;
+  width: 0;
+  border-left: 1px solid #e60f65;
+}
+.lp-gate--today {
+  border-left: 2px solid var(--beghou-navy);
+}
+.lp-gate__label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  background: #e60f65;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.lp-gate--today .lp-gate__label {
+  background: var(--beghou-navy);
+}
