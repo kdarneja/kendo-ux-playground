@@ -1064,7 +1064,13 @@ a {
   margin-bottom: 0;
 }
 
-/* Status ButtonGroup: selected segment reads solid navy. */
+/* Status ButtonGroup: navy-outlined segmented control; selected segment reads
+   solid navy (per design system). */
+.lp-filters .k-button-group .k-button {
+  background: var(--beghou-surface-app);
+  border-color: var(--beghou-navy);
+  color: var(--beghou-navy);
+}
 .lp-filters .k-button-group .k-button.k-selected {
   background: var(--beghou-navy);
   border-color: var(--beghou-navy);
@@ -1161,13 +1167,15 @@ a {
 .lp-gantt {
   height: 100%;
   border: 0;
-  /* All internal grid lines (row + column separators) use the light grey
-     #E8E8EC (neutral-100). */
-  --kendo-color-border: var(--beghou-neutral-100);
+  /* All internal grid lines (row + column separators) use #C5C5CF
+     (neutral-200) so the timeline reads as an even grid. */
+  --kendo-color-border: var(--beghou-neutral-200);
 }
-/* Ensure every row carries the light grey bottom divider. */
-.lp-gantt .k-grid-content .k-table-row > td {
-  border-bottom: 1px solid var(--beghou-neutral-100);
+/* Horizontal row dividers. The timeline's grid lines come from .k-gantt-columns
+   (there is no .k-grid-content here), so the label column needs its own border
+   to complete the grid. Applied to all data rows. */
+.lp-gantt .k-master-row > td {
+  border-bottom: 1px solid var(--beghou-neutral-200);
 }
 
 /* Header band: Beghou navy with white column names (mirrors the wireframe's
@@ -1185,6 +1193,37 @@ a {
 .lp-gantt .k-grid-header .k-link {
   color: var(--beghou-on-navy) !important;
   font-weight: 600;
+}
+/* Centered year label in the timeline header. */
+.lp-gantt .lp-th-year {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.lp-gantt .lp-th-quarter {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Quarterly view: merge the month columns into quarter columns by keeping only
+   the dividers at quarter boundaries (the quarter label then reads as a single
+   left-aligned cell spanning its three months).
+   - Header timeline table (the one carrying the year/quarter labels): drop the
+     month-row dividers, keep the one on each quarter's first cell.
+   - Body grid (.k-gantt-columns = 3 full years × 12 months): keep every 3rd
+     cell's left border (quarter starts). */
+.lp-q .k-table:has(.lp-th-year) tr:last-child > td {
+  border-left-color: transparent !important;
+  overflow: visible;
+}
+.lp-q .k-table:has(.lp-th-year) tr:last-child > td:has(.lp-th-quarter) {
+  border-left-color: rgba(255, 255, 255, 0.25) !important;
+}
+.lp-q .k-gantt-columns td {
+  border-left-color: transparent;
+}
+.lp-q .k-gantt-columns td:nth-child(3n + 1) {
+  border-left-color: var(--beghou-neutral-200);
 }
 
 /* Hide the Gantt toolbar (we provide our own action/filter rows). */
