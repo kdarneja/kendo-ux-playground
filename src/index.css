@@ -1132,7 +1132,7 @@ a {
   flex-direction: column;
   gap: 8px;
   padding: 12px 14px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--beghou-navy);
 }
 .lp-legend__item {
@@ -1313,7 +1313,7 @@ a {
 .lp-gate {
   position: absolute;
   width: 0;
-  border-left: 1px solid #e60f65;
+  border-left: 2px solid #e60f65;
 }
 .lp-gate--today {
   border-left: 2px solid var(--beghou-navy);
