@@ -307,12 +307,14 @@ function segmentGradient(segments: PhaseSeg[]): string {
 
 // ---- Filter option lists ---------------------------------------------------
 
+const FUNCTION_OPTIONS = ['All functions', ...GROUPS.map((g) => g.fn)];
 const VIEW_OPTIONS = ['Monthly', 'Quarterly', 'Yearly'];
 
 // ---- Component -------------------------------------------------------------
 
 export default function LaunchPlanning() {
   const [statusFilter, setStatusFilter] = useState<'All' | Status>('All');
+  const [functionFilter, setFunctionFilter] = useState('All functions');
   const [view, setView] = useState('Quarterly');
   const [from, setFrom] = useState<Date | null>(RANGE_START);
   const [to, setTo] = useState<Date | null>(RANGE_END);
@@ -321,16 +323,20 @@ export default function LaunchPlanning() {
   const ganttWrapRef = useRef<HTMLDivElement>(null);
   const legendAnchor = useRef<HTMLSpanElement>(null);
 
-  // Filtered tree: drop systems failing the status filter, then drop any group
-  // left empty.
+  // Filtered tree: drop the groups failing the function filter and the systems
+  // failing the status filter, then drop any group left empty.
   const tree = useMemo<GanttTask[]>(() => {
-    return FULL_TREE.map((grp) => {
-      const kids = (grp.children ?? []).filter(
-        (sys) => statusFilter === 'All' || sys.status === statusFilter,
-      );
-      return { ...grp, children: kids };
-    }).filter((grp) => (grp.children ?? []).length > 0);
-  }, [statusFilter]);
+    return FULL_TREE.filter(
+      (grp) => functionFilter === 'All functions' || grp.title === functionFilter.toUpperCase(),
+    )
+      .map((grp) => {
+        const kids = (grp.children ?? []).filter(
+          (sys) => statusFilter === 'All' || sys.status === statusFilter,
+        );
+        return { ...grp, children: kids };
+      })
+      .filter((grp) => (grp.children ?? []).length > 0);
+  }, [statusFilter, functionFilter]);
 
   // Per-system gradient stylesheet, keyed on the task bar's data-task-id.
   const gradientCss = useMemo(() => {
@@ -363,6 +369,27 @@ export default function LaunchPlanning() {
   // Custom row component: tag group (function) rows so CSS can band them, and
   // mark system rows with their status. We delegate to the default GanttRow and
   // use its `render` hook to clone the built <tr> with extra classes.
+  // Timeline header: center the year row, and in Quarterly view relabel the
+  // month sub-row with quarter numbers (Q1 '26 at each quarter's first month).
+  const TimelineHeaderCell = useMemo(() => {
+    return (props: { type: string; range: { start: Date; end: Date }; text: string }) => {
+      const { type, range, text } = props;
+      // Use the cell's midpoint so a boundary tick (e.g. Jan 1 landing on
+      // Dec 31 in local time) can't shift the year/month by one.
+      const mid = new Date((range.start.getTime() + range.end.getTime()) / 2);
+      if (type === 'year') {
+        return <span className="lp-th-year">{mid.getFullYear()}</span>;
+      }
+      if (type === 'month' && view === 'Quarterly') {
+        const m = mid.getMonth();
+        if (m % 3 !== 0) return <span />;
+        const yy = String(mid.getFullYear()).slice(2);
+        return <span className="lp-th-quarter">{`Q${m / 3 + 1} '${yy}`}</span>;
+      }
+      return <span>{text}</span>;
+    };
+  }, [view]);
+
   const Row = (props: GanttRowProps) => (
     <GanttRow
       {...props}
@@ -440,6 +467,7 @@ export default function LaunchPlanning() {
 
   const resetFilters = () => {
     setStatusFilter('All');
+    setFunctionFilter('All functions');
     setView('Quarterly');
     setFrom(RANGE_START);
     setTo(RANGE_END);
@@ -473,6 +501,17 @@ export default function LaunchPlanning() {
 
       {/* Filter row */}
       <div className="lp-filters">
+        <label className="lp-field">
+          <span className="lp-field__label">Function</span>
+          <DropDownList
+            data={FUNCTION_OPTIONS}
+            value={functionFilter}
+            fillMode="outline"
+            size="medium"
+            onChange={(e: DropDownListChangeEvent) => setFunctionFilter(e.value)}
+          />
+        </label>
+
         <div className="lp-field">
           <span className="lp-field__label">Status</span>
           <ButtonGroup>
@@ -595,7 +634,10 @@ export default function LaunchPlanning() {
       </div>
 
       {/* Gantt roadmap */}
-      <div className="lp-gantt-wrap" ref={ganttWrapRef}>
+      <div
+        className={`lp-gantt-wrap${view === 'Quarterly' ? ' lp-q' : ''}`}
+        ref={ganttWrapRef}
+      >
         <Gantt
           className="lp-gantt"
           taskData={tree as never}
@@ -612,9 +654,17 @@ export default function LaunchPlanning() {
           }}
         >
           {view === 'Monthly' ? (
-            <GanttMonthView slotWidth={64} dateRange={ZONED_RANGE} />
+            <GanttMonthView
+              slotWidth={64}
+              dateRange={ZONED_RANGE}
+              timelineHeaderCell={TimelineHeaderCell}
+            />
           ) : (
-            <GanttYearView slotWidth={56} dateRange={ZONED_RANGE} />
+            <GanttYearView
+              slotWidth={56}
+              dateRange={ZONED_RANGE}
+              timelineHeaderCell={TimelineHeaderCell}
+            />
           )}
         </Gantt>
       </div>
