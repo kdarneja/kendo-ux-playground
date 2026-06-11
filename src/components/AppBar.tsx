@@ -9,6 +9,7 @@ import {
   gearIcon,
 } from '@progress/kendo-svg-icons';
 import { routes } from '../routes';
+import beghouArcLogo from '../assets/beghou-arc-logo.svg';
 
 type AppBarProps = {
   onToggleDrawer: () => void;
@@ -30,7 +31,8 @@ export function AppBar({
   hasUnreadNotifications = true,
 }: AppBarProps) {
   const { pathname } = useLocation();
-  const pageLabel = findPageLabel(pathname);
+  const isHome = pathname === '/';
+  const pageLabel = isHome ? 'Kendo Playground' : findPageLabel(pathname);
 
   return (
     <header className="beghou-appbar" role="banner">
@@ -46,7 +48,9 @@ export function AppBar({
             <SvgIcon icon={menuIcon} size="large" />
           </button>
         </div>
-        <Link to="/" className="beghou-appbar__logo">Kendo Playground</Link>
+        <Link to="/" className="beghou-appbar__logo" aria-label="Beghou ARC home">
+          <img src={beghouArcLogo} alt="Beghou ARC" className="beghou-appbar__logo-img" />
+        </Link>
         <div className="beghou-appbar__divider" aria-hidden="true" />
         <span className="beghou-appbar__page-id" aria-label="Current page">
           {pageLabel}
