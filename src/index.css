@@ -92,18 +92,23 @@ a {
 }
 
 .beghou-appbar__logo {
-  font-family: var(--kendo-font-family);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--beghou-navy);
-  letter-spacing: 0;
+  display: inline-flex;
+  align-items: center;
   margin-left: 28px;
   line-height: 1;
   text-decoration: none;
 }
 
-.beghou-appbar__logo:hover {
-  text-decoration: underline;
+.beghou-appbar__logo-img {
+  height: 30px;
+  width: auto;
+  display: block;
+}
+
+.beghou-appbar__logo:focus-visible {
+  outline: 2px solid var(--beghou-focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .beghou-appbar__divider {
