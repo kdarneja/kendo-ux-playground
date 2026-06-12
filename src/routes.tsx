@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import type { SVGIcon } from '@progress/kendo-svg-icons';
-import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon, gridLayoutIcon, calendarIcon, chartBarStackedIcon, dashboardIcon } from '@progress/kendo-svg-icons';
+import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon, gridLayoutIcon, calendarIcon, chartBarStackedIcon, dashboardIcon, chartColumnClusteredIcon } from '@progress/kendo-svg-icons';
 
 import Home from './pages/Home';
 import StackedWindows from './pages/StackedWindows';
@@ -10,6 +10,7 @@ import AlignmentManageViews from './pages/AlignmentManageViews';
 import Calendar from './pages/Calendar';
 import LaunchPlanning from './pages/LaunchPlanning';
 import SmallCalendar from './pages/SmallCalendar';
+import AppVisualizations from './pages/AppVisualizations';
 
 export type RouteDef = {
   path: string;
@@ -75,5 +76,12 @@ export const routes: RouteDef[] = [
     icon: dashboardIcon,
     description: 'Portal dashboard with a compact calendar and an Events / Updates feed.',
     component: SmallCalendar,
+  },
+  {
+    path: '/app-visualizations',
+    label: 'App Visualizations',
+    icon: chartColumnClusteredIcon,
+    description: 'Best-practice examples of Kendo charts rendered inside app pages.',
+    component: AppVisualizations,
   },
 ];

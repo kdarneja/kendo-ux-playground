@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.1.0",
+    "@progress/kendo-charts": "^2.12.2",
     "@progress/kendo-data-query": "^1.7.0",
     "@progress/kendo-date-math": "^1.5.17",
     "@progress/kendo-dateinputs-common": "^0.4.11",
@@ -19,6 +20,7 @@
     "@progress/kendo-intl": "^3.2.1",
     "@progress/kendo-licensing": "^1.5.0",
     "@progress/kendo-react-buttons": "^9.4.0",
+    "@progress/kendo-react-charts": "9.5.0",
     "@progress/kendo-react-common": "^9.4.0",
     "@progress/kendo-react-dateinputs": "9.5.0",
     "@progress/kendo-react-dialogs": "9.5.0",
