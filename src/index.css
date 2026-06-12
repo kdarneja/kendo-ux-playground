@@ -1339,3 +1339,348 @@ a {
 .lp-gate--today .lp-gate__label {
   background: var(--beghou-navy);
 }
+
+/* ---------- Small Calendar (portal dashboard) ---------- */
+/* 16px side gutters: left of the cards, right of the calendar. */
+.sc-page {
+  padding: 24px 16px;
+  min-height: 0;
+}
+
+/* Cards fill the left and wrap; the calendar takes whatever's left on the
+   right, responsive with a 250px floor. 16px gutter between them. */
+.sc-layout {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+}
+
+.sc-main {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Cards start at 354px and stretch to fill the row (no dead space before the
+   calendar); a new column is added once there's room for another 354px card. */
+.sc-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(354px, 1fr));
+  gap: 16px;
+}
+
+/* Empty card placeholders — real cards land here later. */
+.sc-card-placeholder.k-card {
+  height: 180px;
+  border: 1px dashed var(--border-container);
+  background: var(--beghou-surface-card);
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+/* Calendar column: ~250px floor (249 so three 354px cards + 16px gutters fit
+   the 1391 area at 1440), takes leftover space above that. */
+.sc-side {
+  flex: 0 1 249px;
+  min-width: 249px;
+  min-height: 0;
+}
+
+.sc-widget {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--beghou-surface-card);
+  border: 1px solid var(--border-container);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(2, 4, 52, 0.06);
+}
+
+/* --- Calendar header (custom; Kendo's own header is hidden below) --- */
+.sc-cal-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.sc-cal-header__icon {
+  width: 18px;
+  height: 18px;
+  fill: var(--beghou-navy);
+  flex-shrink: 0;
+}
+.sc-cal-header__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--beghou-navy);
+  white-space: nowrap;
+  margin-right: 2px;
+}
+.sc-cal-header__nav.k-button {
+  width: 24px;
+  height: 24px;
+  color: var(--beghou-navy);
+  flex-shrink: 0;
+}
+.sc-cal-header__add.k-button {
+  margin-left: auto;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+/* --- Kendo Calendar trimmed to just the month grid --- */
+.sc-calendar.k-calendar {
+  width: 100%;
+  border: 0;
+  flex-shrink: 0;
+  /* Match the widget surface — no tinted calendar background. */
+  background: transparent;
+  box-shadow: none;
+}
+/* Strip the calendar's own tint + scroll-fade so the dates sit on the same
+   surface as the rest of the widget. */
+.sc-calendar .k-calendar-view,
+.sc-calendar .k-calendar-table,
+.sc-calendar .k-calendar-td,
+.sc-calendar .k-calendar-th,
+.sc-calendar .k-scrollable,
+.sc-calendar .k-scrollable-content,
+.sc-calendar .k-content {
+  background: transparent;
+  box-shadow: none;
+}
+/* The scroll viewport draws a top/bottom fade ("blur") — remove it. */
+.sc-calendar .k-calendar-view::before,
+.sc-calendar .k-calendar-view::after,
+.sc-calendar .k-scrollable::before,
+.sc-calendar .k-scrollable::after {
+  display: none;
+}
+/* Hide Kendo's built-in header/footer + side navigation; our header drives it. */
+.sc-calendar .k-calendar-header,
+.sc-calendar .k-calendar-navigation,
+.sc-calendar .k-calendar-footer {
+  display: none;
+}
+/* Clip the continuous-scroll view to the focused month: weekday header row
+   (32px) + N week rows (32px each). --sc-cal-weeks is set per render. */
+.sc-cal-wrap .k-calendar-view {
+  width: 100%;
+  padding: 0;
+  height: calc((var(--sc-cal-weeks, 6) + 1) * 32px);
+  overflow: hidden;
+}
+.sc-calendar .k-calendar-tbody .k-calendar-tr {
+  height: 32px;
+}
+/* Stretch the grid to fill the widget: 7 equal columns, fluid above the
+   250px control floor set on the column. */
+.sc-calendar .k-calendar-table,
+.sc-calendar .k-calendar-weekdays {
+  width: 100%;
+  table-layout: fixed;
+}
+.sc-calendar .k-calendar-weekdays th,
+.sc-calendar .k-calendar-thead .k-calendar-th {
+  font-weight: 700;
+  color: var(--beghou-navy);
+  text-transform: uppercase;
+}
+.sc-day {
+  position: relative;
+}
+.sc-day__dot {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--beghou-navy);
+}
+/* Selected day: navy fill with a white number; its dot (if any) turns white. */
+.sc-calendar .k-calendar-td.k-selected .sc-day,
+.sc-calendar .k-calendar-td.k-selected .sc-day:hover {
+  background: var(--beghou-navy);
+  color: var(--beghou-on-navy);
+  box-shadow: none;
+}
+.sc-calendar .k-calendar-td.k-selected .sc-day__dot {
+  background: var(--beghou-on-navy);
+}
+
+/* --- Events / Updates segmented control --- */
+.sc-tabs.k-button-group {
+  display: flex;
+  margin: 14px 0 12px;
+  border: 1px solid var(--beghou-navy);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.sc-tab.k-button {
+  flex: 1;
+  min-width: 0;
+  background: var(--beghou-surface-card);
+  color: var(--beghou-navy);
+  border: 0;
+  border-radius: 0;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 6px;
+  white-space: nowrap;
+}
+.sc-tab.k-button .k-button-icon,
+.sc-tab.k-button .k-svg-icon {
+  width: 15px;
+  height: 15px;
+}
+.sc-tab.k-button.k-selected {
+  background: var(--beghou-navy);
+  color: var(--beghou-on-navy);
+}
+
+/* --- Feed --- */
+.sc-feed {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.sc-entry {
+  padding: 14px 0;
+  border-top: 1px solid var(--border-container);
+}
+/* First entry sits directly under the date heading — no divider above it. */
+.sc-feed__date + .sc-entry {
+  border-top: 0;
+  padding-top: 0;
+}
+.sc-entry--muted {
+  opacity: 0.4;
+}
+.sc-feed__date {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--beghou-navy);
+  margin: 0 0 12px;
+}
+.sc-feed__empty {
+  font-size: 14px;
+  color: var(--beghou-navy);
+  opacity: 0.55;
+  margin: 0;
+}
+.sc-entry__body {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--beghou-navy);
+  margin: 0;
+}
+.sc-entry__body--clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.sc-entry__more {
+  margin-top: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--beghou-navy);
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+.sc-entry__more:hover {
+  text-decoration: underline;
+}
+
+/* Close bar pinned to the bottom of the scroll region so the X stays in view
+   while the expanded description scrolls under it. */
+.sc-entry__close-bar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  margin-top: 8px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    var(--beghou-surface-card) 40%
+  );
+}
+.sc-entry__close.k-button {
+  color: var(--beghou-navy);
+  width: 36px;
+  height: 36px;
+}
+
+/* --- Add to calendar dialog (design-system chrome, mirrors mv-dialog) --- */
+.sc-add-dialog .k-dialog {
+  max-width: calc(100vw - 32px);
+}
+.sc-add-dialog .k-dialog-titlebar {
+  background: var(--beghou-surface-card);
+  border-bottom: 1px solid var(--border-container);
+  padding-block: 14px;
+}
+.sc-add-dialog .k-dialog-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--beghou-navy);
+}
+.sc-add-dialog .k-dialog-actions {
+  background: var(--beghou-surface-card);
+  border-top: 1px solid var(--border-container);
+  padding: 12px 16px;
+  margin: 0;
+}
+/* Match the design-system secondary button (stock theme bakes coral into the
+   outline-primary; force brand navy). */
+.sc-add-dialog .k-button-outline {
+  color: var(--beghou-navy);
+  border-color: var(--beghou-navy);
+  background: var(--beghou-surface-app);
+}
+.sc-add-dialog .k-button-outline:hover {
+  color: var(--beghou-on-navy);
+  background: var(--beghou-navy);
+  border-color: var(--beghou-navy);
+}
+
+.sc-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sc-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sc-form__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--beghou-navy);
+}
+.sc-form .k-datepicker,
+.sc-form .k-textarea {
+  width: 100%;
+}
+
+/* Design system: unselected radio has a navy border (Kendo defaults to light
+   grey). Selected state keeps Kendo's default navy fill + white dot. */
+.sc-form__radios .k-radio {
+  border-color: var(--beghou-navy);
+}

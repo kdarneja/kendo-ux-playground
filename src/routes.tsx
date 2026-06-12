@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import type { SVGIcon } from '@progress/kendo-svg-icons';
-import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon, gridLayoutIcon, calendarIcon, chartBarStackedIcon } from '@progress/kendo-svg-icons';
+import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon, gridLayoutIcon, calendarIcon, chartBarStackedIcon, dashboardIcon } from '@progress/kendo-svg-icons';
 
 import Home from './pages/Home';
 import StackedWindows from './pages/StackedWindows';
@@ -9,6 +9,7 @@ import IconToggleButton from './pages/IconToggleButton';
 import AlignmentManageViews from './pages/AlignmentManageViews';
 import Calendar from './pages/Calendar';
 import LaunchPlanning from './pages/LaunchPlanning';
+import SmallCalendar from './pages/SmallCalendar';
 
 export type RouteDef = {
   path: string;
@@ -67,5 +68,12 @@ export const routes: RouteDef[] = [
     icon: chartBarStackedIcon,
     description: 'Systems roadmap across launch workstreams, built on the Kendo Gantt.',
     component: LaunchPlanning,
+  },
+  {
+    path: '/small-calendar',
+    label: 'Small Calendar',
+    icon: dashboardIcon,
+    description: 'Portal dashboard with a compact calendar and an Events / Updates feed.',
+    component: SmallCalendar,
   },
 ];
