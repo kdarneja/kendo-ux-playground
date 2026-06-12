@@ -1684,3 +1684,274 @@ a {
 .sc-form__radios .k-radio {
   border-color: var(--beghou-navy);
 }
+
+/* ---------- App Visualizations (chart spec) ---------- */
+/* Full-bleed white canvas; charts live in elevated cards. */
+.av-page {
+  background: #ffffff;
+  padding: 0;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+}
+
+/* Developer Handoff Notes — text button to the right of the tab row. */
+.av-notes-anchor {
+  position: absolute;
+  top: 3px;
+  right: 16px;
+  z-index: 2;
+}
+.av-notes-btn.k-button {
+  color: var(--beghou-navy);
+  font-weight: 600;
+}
+.av-notes-popup .av-notes {
+  background: #ffffff;
+  padding: 16px 18px;
+  max-width: 400px;
+}
+.av-notes__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--beghou-navy);
+  margin: 0 0 10px;
+}
+.av-notes__list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.av-notes__list li {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--beghou-navy);
+}
+.av-tabs.k-tabstrip {
+  border: 0;
+}
+.av-tabs .k-tabstrip-items-wrapper {
+  background: #ffffff;
+  padding: 0 20px;
+}
+.av-tabs .k-tabstrip-content,
+.av-tabs .k-tabstrip > .k-content {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+/* Kendo wraps tab content in an inline-block animation container that
+   shrink-wraps to content; force it full width so grids can fill. */
+.av-tabs .k-animation-container,
+.av-tabs .k-child-animation-container {
+  display: block;
+  width: 100%;
+}
+
+/* Card chrome: 1px border + elevation shadow on white. */
+.av-card {
+  background: #ffffff;
+  border: 1px solid var(--border-container);
+  border-radius: 6px;
+  box-shadow: var(--kendo-elevation-4);
+  padding: 16px 20px;
+  min-width: 0;
+}
+.av-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.av-card__heading {
+  margin-bottom: 8px;
+}
+.av-card__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--beghou-navy);
+  margin: 0;
+}
+.av-card__sub {
+  font-size: 13px;
+  color: var(--beghou-navy);
+  opacity: 0.6;
+  margin: 2px 0 0;
+}
+.av-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+/* Compact header dropdowns (product filter, period) — fixed width, and the
+   same solid border as the outline Export button (Kendo's outline input border
+   is a lighter, semi-transparent grey by default). */
+.av-dd.k-dropdownlist {
+  width: 150px;
+  border-color: rgb(61, 61, 61);
+}
+
+/* Sales tab: QTD pair, monthly + CRM, full-width trend. */
+.av-grid--sales {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+.av-grid--sales .av-card--trend {
+  grid-column: 1 / -1;
+}
+/* Example 3: same layout on a grey canvas (cards stay white + elevated). */
+.av-grid--grey {
+  background: #f1f1f1;
+  min-height: 100%;
+}
+
+/* Segmented control (CRM Engagement / HCP Coverage): navy selected, 30px. */
+.av-seg.k-button-group {
+  border: 1px solid var(--beghou-navy);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.av-seg__btn.k-button {
+  background: #ffffff;
+  color: var(--beghou-navy);
+  border: 0;
+  border-radius: 0;
+  font-weight: 600;
+  height: 30px;
+  padding: 0 14px;
+}
+.av-seg__btn.k-button.k-selected {
+  background: var(--beghou-navy);
+  color: var(--beghou-on-navy);
+}
+/* CRM toggle sits below the title, above the chart. */
+.av-card--crm .av-seg {
+  margin-bottom: 16px;
+}
+
+.av-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.av-field__label {
+  font-size: 13px;
+  color: var(--beghou-navy);
+}
+
+/* Data quality tab: one card, sections divided by 1px borders (header /
+   filters | pass-fail / grid | chart). */
+.av-card--dq {
+  margin: 20px;
+  padding: 0;
+  overflow: hidden;
+}
+.av-dq__title {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-container);
+}
+.av-dq__filters-row {
+  display: flex;
+  border-bottom: 1px solid var(--border-container);
+}
+.av-dq__filters {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+}
+.av-dq__summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border-left: 1px solid var(--border-container);
+  min-width: 440px;
+}
+.av-dq__summary .av-pf {
+  flex: 1;
+  height: 30px;
+}
+.av-dq-summary__label {
+  font-weight: 700;
+  color: var(--beghou-navy);
+}
+.av-dq__body {
+  display: flex;
+}
+.av-dq__grid {
+  flex: 0 0 460px;
+  min-width: 0;
+  padding: 16px 20px;
+}
+/* Zebra-striped rows (header + pager keep their tint). */
+.av-dq__grid .k-grid td {
+  background: #ffffff;
+}
+.av-dq__grid .k-grid .k-alt td {
+  background: var(--beghou-neutral-50);
+}
+/* Taller pass/fail bars that fill the row. */
+.av-dq__grid .av-pf {
+  height: 30px;
+  border-radius: 0;
+}
+.av-dq__results {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 20px;
+  border-left: 1px solid var(--border-container);
+}
+
+/* Pass / fail ratio bar (styled; Kendo has no labeled two-segment indicator). */
+.av-pf {
+  display: flex;
+  height: 22px;
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 160px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.av-pf__seg {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+.av-pf__seg--pass {
+  background: #1a8a3c;
+  justify-content: flex-start;
+}
+.av-pf__seg--fail {
+  background: #dc2626;
+  justify-content: flex-end;
+}
+
+@media (max-width: 1100px) {
+  .av-grid--sales {
+    grid-template-columns: 1fr;
+  }
+  .av-dq__filters-row,
+  .av-dq__body {
+    flex-direction: column;
+  }
+  .av-dq__summary,
+  .av-dq__results {
+    border-left: 0;
+    border-top: 1px solid var(--border-container);
+    min-width: 0;
+  }
+  .av-dq__grid {
+    flex-basis: auto;
+  }
+}
