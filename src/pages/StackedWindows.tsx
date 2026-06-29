@@ -47,6 +47,10 @@ type MoveEvent = { left: number; top: number };
 const TITLEBAR_HEIGHT = 44;
 const MIN_HEIGHT = 200;
 const GUTTER = 5;
+// DEFAULT-stage window height: titlebar + grid header + ~5 small rows + a
+// horizontal scrollbar. Keeps the window to roughly the first 4-5 rows so it
+// never eats half the map; the rest of the grid scrolls inside the window.
+const DEFAULT_HEIGHT = 250;
 
 // Kendo Window has a bug where `top: 0` / `left: 0` are silently ignored
 // (`this.props.top || this.state.top` treats 0 as falsy). Use 1 instead.
@@ -73,9 +77,11 @@ function slotPosition(slotIdx: number, totalSlots: number, stage: Stage, rect: D
       height: TITLEBAR_HEIGHT,
     };
   }
-  // DEFAULT: bottom half of slot (grows up from the minimized chip).
-  const halfH = Math.max(MIN_HEIGHT, Math.floor(H / 2));
-  return { left, top: Math.max(ZERO_DODGE, H - halfH), width, height: halfH };
+  // DEFAULT: a compact window showing the first ~4-5 rows, anchored to the
+  // bottom of the slot (grows up from the minimized chip). Capped to the
+  // available height so it never overflows a short map.
+  const defaultH = Math.min(DEFAULT_HEIGHT, H);
+  return { left, top: Math.max(ZERO_DODGE, H - defaultH), width, height: defaultH };
 }
 
 const NoButton = () => null;
@@ -300,9 +306,25 @@ export default function StackedWindows() {
           const isFull = summaryStage === 'FULLSCREEN';
           const summaryWidth = isMin ? 260 : Math.max(360, Math.floor(W / 3));
           const summaryLeft = Math.max(ZERO_DODGE, W - summaryWidth - GUTTER);
+          // Height of a bottom-docked window in a given stage, so the Summary
+          // panel can stop short of whichever bottom window is tallest and
+          // never overlap it.
+          const bandHeight = (st: Stage) =>
+            st === 'MINIMIZED' ? TITLEBAR_HEIGHT : st === 'FULLSCREEN' ? H : Math.min(DEFAULT_HEIGHT, H);
+          const reservedBottom = Math.max(
+            bandHeight(zip.stage),
+            showHcp ? bandHeight(hcp.stage) : 0,
+            showAcc ? bandHeight(acc.stage) : 0,
+          );
+          // DEFAULT summary fills from the top down to just above the bottom
+          // band. FULLSCREEN still covers the whole map (it overlays).
+          const summaryDefaultHeight = Math.max(
+            MIN_HEIGHT,
+            H - reservedBottom - ZERO_DODGE - GUTTER,
+          );
           return (
             <Window
-              key={`summary-${summaryStage}-${summaryWidth}-${W}`}
+              key={`summary-${summaryStage}-${summaryWidth}-${W}-${reservedBottom}`}
               title="Summary"
               className="summary-window"
               appendTo={mapWrapperRef.current ?? undefined}
@@ -310,7 +332,7 @@ export default function StackedWindows() {
               initialLeft={isFull ? ZERO_DODGE : summaryLeft}
               initialTop={ZERO_DODGE}
               initialWidth={isFull ? W : summaryWidth}
-              initialHeight={isMin ? TITLEBAR_HEIGHT : H - 2 * GUTTER}
+              initialHeight={isMin ? TITLEBAR_HEIGHT : isFull ? H - 2 * GUTTER : summaryDefaultHeight}
               modal={false}
               draggable={false}
               resizable={false}
