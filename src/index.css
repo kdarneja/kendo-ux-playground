@@ -391,6 +391,64 @@ a {
   font-size: 12px;
 }
 
+/* ---------- Summary panel (Alignment-Map Windows page) ---------- */
+/* Docked top-right; the grid below the header drives the panel height. */
+.summary-window.k-window {
+  z-index: 6;
+}
+
+/* Fills the Window content area so the grid below the toolbar takes all the
+   remaining height. The grid scrolls internally rather than growing the panel. */
+.summary-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.summary-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.summary-search {
+  flex: 0 1 340px;
+}
+
+.summary-tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-grid-wrap {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Color swatch in the first grid column. */
+.summary-color-cell {
+  vertical-align: middle;
+}
+
+.summary-swatch {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+}
+
+/* Grid auto-sizes to its rows so the Window height follows the content. */
+.summary-grid.k-grid {
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+
 /* ---------- Floating map toolbar (Map Toolbars page) ---------- */
 .map-toolbar-overlay {
   position: absolute;
@@ -1304,6 +1362,31 @@ a {
 .lp-gantt .lp-shade-1 > td:first-child { background: #e4f6e9 !important; }
 .lp-gantt .lp-shade-2 > td:first-child { background: #fbe3e3 !important; }
 .lp-gantt .lp-shade-3 > td:first-child { background: #fcf3d4 !important; }
+
+/* Status dot ("traffic light") in front of each shaded system label. The last
+   treelist-toggle is an empty indentation spacer that sits immediately before
+   the label text, so we widen it to open a gap and drop the dot inside via
+   ::after. Color is the saturated/darker tone of each cell's pale shade. */
+.lp-gantt .lp-system-row > td:first-child .k-treelist-toggle:last-of-type {
+  width: 24px;
+}
+.lp-gantt .lp-shade-0 > td:first-child .k-treelist-toggle:last-of-type::after,
+.lp-gantt .lp-shade-1 > td:first-child .k-treelist-toggle:last-of-type::after,
+.lp-gantt .lp-shade-2 > td:first-child .k-treelist-toggle:last-of-type::after,
+.lp-gantt .lp-shade-3 > td:first-child .k-treelist-toggle:last-of-type::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.lp-gantt .lp-shade-0 > td:first-child .k-treelist-toggle:last-of-type::after { background: #1f77b4; }
+.lp-gantt .lp-shade-1 > td:first-child .k-treelist-toggle:last-of-type::after { background: #16a34a; }
+.lp-gantt .lp-shade-2 > td:first-child .k-treelist-toggle:last-of-type::after { background: #dc2626; }
+.lp-gantt .lp-shade-3 > td:first-child .k-treelist-toggle:last-of-type::after { background: #d9a406; }
 
 /* Launch-gate vertical reference lines, injected into the Gantt scroll grid.
    Each .lp-gate gets its left/top/height inline from the overlay effect. */

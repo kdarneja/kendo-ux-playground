@@ -1,8 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Window, type WindowActionsEvent } from '@progress/kendo-react-dialogs';
-import { Checkbox, type CheckboxChangeEvent } from '@progress/kendo-react-inputs';
+import {
+  Checkbox,
+  type CheckboxChangeEvent,
+  TextBox,
+  type TextBoxChangeEvent,
+  InputPrefix,
+} from '@progress/kendo-react-inputs';
 import { Map as KendoMap, MapLayers, MapTileLayer } from '@progress/kendo-react-map';
-import { Grid, GridColumn } from '@progress/kendo-react-grid';
+import {
+  Grid,
+  GridColumn,
+  GridColumnMenuSort,
+  GridColumnMenuFilter,
+  type GridColumnMenuProps,
+  type GridCustomCellProps,
+} from '@progress/kendo-react-grid';
+import { Button, SplitButton } from '@progress/kendo-react-buttons';
+import { SvgIcon } from '@progress/kendo-react-common';
+import { searchIcon, gearIcon, gridIcon } from '@progress/kendo-svg-icons';
+import {
+  process,
+  type SortDescriptor,
+  type CompositeFilterDescriptor,
+} from '@progress/kendo-data-query';
 
 type Stage = 'DEFAULT' | 'MINIMIZED' | 'FULLSCREEN';
 type WinKey = 'zip' | 'hcp' | 'acc';
@@ -99,6 +120,36 @@ const ACC_DATA = [
   { origTerr: 'T049', origName: 'Atlanta N, GA', newTerr: 'T021', newName: 'Marietta, GA',  id: 128902, lname: 'BANERJEE', fname: 'NITIN',    spec: 'IM',    decMkt: 6,  mkt_roll12: 8421.330,   ESTR_roll12: 3198.402,  MENA_roll12: 1872.4 },
 ];
 
+const SUMMARY_DATA = [
+  { color: '#57c75a', terrId: 'E101', terrName: 'Concord',             mkt_c12m: 1564525, estr_c12m: 704413, index: 933,  mkt_writer: 572,  estr_writer: 572,  level0Count: 572 },
+  { color: '#1b8a78', terrId: 'E102', terrName: 'Boston West',         mkt_c12m: 1864861, estr_c12m: 805888, index: 1107, mkt_writer: 744,  estr_writer: 744,  level0Count: 744 },
+  { color: '#2e8bc0', terrId: 'E103', terrName: 'Dallas City',         mkt_c12m: 2045732, estr_c12m: 912234, index: 1250, mkt_writer: 759,  estr_writer: 759,  level0Count: 759 },
+  { color: '#3a5fe0', terrId: 'E104', terrName: 'Phoenix Heights',     mkt_c12m: 2312498, estr_c12m: 521678, index: 1199, mkt_writer: 630,  estr_writer: 630,  level0Count: 630 },
+  { color: '#7b6fd0', terrId: 'E105', terrName: 'Orlando Bay',         mkt_c12m: 2674809, estr_c12m: 634987, index: 983,  mkt_writer: 607,  estr_writer: 607,  level0Count: 607 },
+  { color: '#97149a', terrId: 'E106', terrName: 'Seattle Park',        mkt_c12m: 2988156, estr_c12m: 742123, index: 1462, mkt_writer: 1462, estr_writer: 1462, level0Count: 1462 },
+  { color: '#c0392b', terrId: 'E107', terrName: 'San Francisco North', mkt_c12m: 3412009, estr_c12m: 853456, index: 916,  mkt_writer: 916,  estr_writer: 916,  level0Count: 916 },
+  { color: '#9a8a00', terrId: 'E108', terrName: 'Chicago Lakeside',    mkt_c12m: 3780543, estr_c12m: 964789, index: 607,  mkt_writer: 607,  estr_writer: 607,  level0Count: 607 },
+  { color: '#8a4b1c', terrId: 'E109', terrName: 'Miami Shores',        mkt_c12m: 4256874, estr_c12m: 107543, index: 1512, mkt_writer: 1512, estr_writer: 1512, level0Count: 1512 },
+  { color: '#163a5e', terrId: 'E110', terrName: 'Austin Grove',        mkt_c12m: 4678990, estr_c12m: 218765, index: 630,  mkt_writer: 630,  estr_writer: 630,  level0Count: 630 },
+  { color: '#f08a5d', terrId: 'E111', terrName: 'Denver Summit',       mkt_c12m: 5100256, estr_c12m: 329890, index: 1049, mkt_writer: 1049, estr_writer: 1049, level0Count: 1049 },
+  { color: '#17a7e0', terrId: 'E112', terrName: 'Houston Meadows',     mkt_c12m: 5575432, estr_c12m: 430123, index: 1384, mkt_writer: 1384, estr_writer: 1384, level0Count: 1384 },
+];
+
+// Color swatch cell for the Summary grid's "Color ID" column.
+const ColorCell = (props: GridCustomCellProps) => (
+  <td {...props.tdProps} className={`summary-color-cell ${props.tdProps?.className ?? ''}`}>
+    <span className="summary-swatch" style={{ background: props.dataItem.color }} />
+  </td>
+);
+
+// Shared per-column menu: sort + filter, matching the kebab affordance in the mock.
+const SummaryColumnMenu = (props: GridColumnMenuProps) => (
+  <div>
+    <GridColumnMenuSort {...props} />
+    <GridColumnMenuFilter {...props} />
+  </div>
+);
+
 export default function StackedWindows() {
   const mapWrapperRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<KendoMap | null>(null);
@@ -110,6 +161,25 @@ export default function StackedWindows() {
   const [zip, setZip] = useState<WinState>(initialWin);
   const [hcp, setHcp] = useState<WinState>(initialWin);
   const [acc, setAcc] = useState<WinState>(initialWin);
+
+  // Summary panel: docked top-right. MINIMIZED = titlebar only (closed);
+  // DEFAULT = 1/3 of the map width, full available height; FULLSCREEN = full
+  // map with the column toolbar and every column visible.
+  const [summaryStage, setSummaryStage] = useState<Stage>('MINIMIZED');
+  const [summarySearch, setSummarySearch] = useState('');
+  const [summarySort, setSummarySort] = useState<SortDescriptor[]>([]);
+  const [summaryFilter, setSummaryFilter] = useState<CompositeFilterDescriptor | undefined>(undefined);
+
+  const summaryResult = useMemo(() => {
+    let data = SUMMARY_DATA;
+    const q = summarySearch.trim().toLowerCase();
+    if (q) {
+      data = data.filter(
+        (d) => d.terrName.toLowerCase().includes(q) || d.terrId.toLowerCase().includes(q),
+      );
+    }
+    return process(data, { sort: summarySort, filter: summaryFilter });
+  }, [summarySearch, summarySort, summaryFilter]);
 
   const visibleSlots = useMemo<WinKey[]>(() => {
     const s: WinKey[] = ['zip'];
@@ -217,6 +287,94 @@ export default function StackedWindows() {
             </MapLayers>
           </KendoMap>
         )}
+
+        {/* Summary panel docked to the top-right. MINIMIZED = titlebar only;
+            DEFAULT = 1/3 of the map width filling the full available height;
+            FULLSCREEN = full map with the column toolbar and every column. The
+            grid scrolls internally so the panel always fits the map. Re-keyed on
+            stage/width so it re-docks after a toggle or container resize. */}
+        {rect && (() => {
+          const W = Math.round(rect.width);
+          const H = Math.max(MIN_HEIGHT, Math.round(rect.height));
+          const isMin = summaryStage === 'MINIMIZED';
+          const isFull = summaryStage === 'FULLSCREEN';
+          const summaryWidth = isMin ? 260 : Math.max(360, Math.floor(W / 3));
+          const summaryLeft = Math.max(ZERO_DODGE, W - summaryWidth - GUTTER);
+          return (
+            <Window
+              key={`summary-${summaryStage}-${summaryWidth}-${W}`}
+              title="Summary"
+              className="summary-window"
+              appendTo={mapWrapperRef.current ?? undefined}
+              stage={summaryStage}
+              initialLeft={isFull ? ZERO_DODGE : summaryLeft}
+              initialTop={ZERO_DODGE}
+              initialWidth={isFull ? W : summaryWidth}
+              initialHeight={isMin ? TITLEBAR_HEIGHT : H - 2 * GUTTER}
+              modal={false}
+              draggable={false}
+              resizable={false}
+              closeButton={NoButton}
+              onStageChange={(e: WindowActionsEvent) => {
+                if (e.state) setSummaryStage(e.state as Stage);
+              }}
+            >
+              <div className="summary-body">
+                <div className="summary-toolbar">
+                  <TextBox
+                    className="summary-search"
+                    placeholder="search"
+                    value={summarySearch}
+                    onChange={(e: TextBoxChangeEvent) => setSummarySearch(String(e.value ?? ''))}
+                    prefix={() => (
+                      <InputPrefix>
+                        <SvgIcon icon={searchIcon} />
+                      </InputPrefix>
+                    )}
+                  />
+                  {isFull && (
+                    <div className="summary-tools">
+                      <Button fillMode="flat" svgIcon={gearIcon} title="Settings" aria-label="Settings" />
+                      <Button fillMode="flat" svgIcon={gridIcon} title="Columns" aria-label="Columns" />
+                      <SplitButton
+                        text="Export"
+                        themeColor="base"
+                        items={[
+                          { text: 'Export to Excel' },
+                          { text: 'Export to PDF' },
+                          { text: 'Export to CSV' },
+                        ]}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div className="summary-grid-wrap">
+                  <Grid
+                    data={summaryResult.data}
+                    size="small"
+                    className="compact-grid summary-grid"
+                    style={{ height: '100%' }}
+                    sortable
+                    sort={summarySort}
+                    onSortChange={(e) => setSummarySort(e.sort)}
+                    filter={summaryFilter}
+                    onFilterChange={(e) => setSummaryFilter(e.filter ?? undefined)}
+                  >
+                    <GridColumn field="color" title="Color ID" width="100px" cells={{ data: ColorCell }} columnMenu={SummaryColumnMenu} />
+                    <GridColumn field="terrId" title="Territory ID" width="140px" columnMenu={SummaryColumnMenu} />
+                    <GridColumn field="terrName" title="Territory Name" width="190px" columnMenu={SummaryColumnMenu} />
+                    <GridColumn field="mkt_c12m" title="mkt_c12m" width="150px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
+                    <GridColumn field="estr_c12m" title="estr_c12m" width="150px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
+                    <GridColumn field="index" title="Index" width="120px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
+                    <GridColumn field="mkt_writer" title="mkt_writer" width="140px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
+                    <GridColumn field="estr_writer" title="estr_writer" width="140px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
+                    <GridColumn field="level0Count" title="_Level0Count" width="150px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
+                  </Grid>
+                </div>
+              </div>
+            </Window>
+          );
+        })()}
 
         {/* Keys are prefixed with the window's identity so React never reuses
             a Window across the three slots — e.g. when Accounts is enabled
