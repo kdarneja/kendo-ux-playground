@@ -141,15 +141,17 @@ const SUMMARY_DATA = [
   { color: '#17a7e0', terrId: 'E112', terrName: 'Houston Meadows',     mkt_c12m: 5575432, estr_c12m: 430123, index: 1384, mkt_writer: 1384, estr_writer: 1384, level0Count: 1384 },
 ];
 
-// Color swatch cell for the Summary grid's "Color ID" column.
-const ColorCell = (props: GridCustomCellProps) => (
-  <td {...props.tdProps} className={`summary-color-cell ${props.tdProps?.className ?? ''}`}>
+// Territory ID cell with its color swatch inline, so the color and the ID
+// read as one column instead of a separate "Color ID" column.
+const TerritoryIdCell = (props: GridCustomCellProps) => (
+  <td {...props.tdProps} className={`summary-terr-cell ${props.tdProps?.className ?? ''}`}>
     <span className="summary-swatch" style={{ background: props.dataItem.color }} />
+    <span>{props.dataItem.terrId}</span>
   </td>
 );
 
 // Shared per-column menu: sort + filter, matching the kebab affordance in the mock.
-const SummaryColumnMenu = (props: GridColumnMenuProps) => (
+const ColumnMenu = (props: GridColumnMenuProps) => (
   <div>
     <GridColumnMenuSort {...props} />
     <GridColumnMenuFilter {...props} />
@@ -186,6 +188,27 @@ export default function StackedWindows() {
     }
     return process(data, { sort: summarySort, filter: summaryFilter });
   }, [summarySearch, summarySort, summaryFilter]);
+
+  // Sort + filter state for the three data grids (Zip / HCP / Accounts).
+  const [zipSort, setZipSort] = useState<SortDescriptor[]>([]);
+  const [zipFilter, setZipFilter] = useState<CompositeFilterDescriptor | undefined>(undefined);
+  const [hcpSort, setHcpSort] = useState<SortDescriptor[]>([]);
+  const [hcpFilter, setHcpFilter] = useState<CompositeFilterDescriptor | undefined>(undefined);
+  const [accSort, setAccSort] = useState<SortDescriptor[]>([]);
+  const [accFilter, setAccFilter] = useState<CompositeFilterDescriptor | undefined>(undefined);
+
+  const zipResult = useMemo(
+    () => process(ZIP_DATA, { sort: zipSort, filter: zipFilter }),
+    [zipSort, zipFilter],
+  );
+  const hcpResult = useMemo(
+    () => process(HCP_DATA, { sort: hcpSort, filter: hcpFilter }),
+    [hcpSort, hcpFilter],
+  );
+  const accResult = useMemo(
+    () => process(ACC_DATA, { sort: accSort, filter: accFilter }),
+    [accSort, accFilter],
+  );
 
   const visibleSlots = useMemo<WinKey[]>(() => {
     const s: WinKey[] = ['zip'];
@@ -335,7 +358,7 @@ export default function StackedWindows() {
               initialHeight={isMin ? TITLEBAR_HEIGHT : isFull ? H - 2 * GUTTER : summaryDefaultHeight}
               modal={false}
               draggable={false}
-              resizable={false}
+              resizable
               closeButton={NoButton}
               onStageChange={(e: WindowActionsEvent) => {
                 if (e.state) setSummaryStage(e.state as Stage);
@@ -377,20 +400,20 @@ export default function StackedWindows() {
                     className="compact-grid summary-grid"
                     style={{ height: '100%' }}
                     sortable
+                    resizable
                     sort={summarySort}
                     onSortChange={(e) => setSummarySort(e.sort)}
                     filter={summaryFilter}
                     onFilterChange={(e) => setSummaryFilter(e.filter ?? undefined)}
                   >
-                    <GridColumn field="color" title="Color ID" width="100px" cells={{ data: ColorCell }} columnMenu={SummaryColumnMenu} />
-                    <GridColumn field="terrId" title="Territory ID" width="140px" columnMenu={SummaryColumnMenu} />
-                    <GridColumn field="terrName" title="Territory Name" width="190px" columnMenu={SummaryColumnMenu} />
-                    <GridColumn field="mkt_c12m" title="mkt_c12m" width="150px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
-                    <GridColumn field="estr_c12m" title="estr_c12m" width="150px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
-                    <GridColumn field="index" title="Index" width="120px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
-                    <GridColumn field="mkt_writer" title="mkt_writer" width="140px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
-                    <GridColumn field="estr_writer" title="estr_writer" width="140px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
-                    <GridColumn field="level0Count" title="_Level0Count" width="150px" format="{0:n0}" columnMenu={SummaryColumnMenu} />
+                    <GridColumn field="terrId" title="Territory ID" width="160px" cells={{ data: TerritoryIdCell }} columnMenu={ColumnMenu} />
+                    <GridColumn field="terrName" title="Territory Name" width="190px" columnMenu={ColumnMenu} />
+                    <GridColumn field="mkt_c12m" title="mkt_c12m" width="150px" format="{0:n0}" columnMenu={ColumnMenu} />
+                    <GridColumn field="estr_c12m" title="estr_c12m" width="150px" format="{0:n0}" columnMenu={ColumnMenu} />
+                    <GridColumn field="index" title="Index" width="120px" format="{0:n0}" columnMenu={ColumnMenu} />
+                    <GridColumn field="mkt_writer" title="mkt_writer" width="140px" format="{0:n0}" columnMenu={ColumnMenu} />
+                    <GridColumn field="estr_writer" title="estr_writer" width="140px" format="{0:n0}" columnMenu={ColumnMenu} />
+                    <GridColumn field="level0Count" title="_Level0Count" width="150px" format="{0:n0}" columnMenu={ColumnMenu} />
                   </Grid>
                 </div>
               </div>
@@ -421,17 +444,28 @@ export default function StackedWindows() {
             onMove={onMove(setZip)}
             onResize={onResize(setZip)}
           >
-            <Grid data={ZIP_DATA} size="small" className="compact-grid" style={{ height: '100%' }}>
-              <GridColumn field="zip" title="Zip" width="100px" />
-              <GridColumn field="terrId" title="Terr ID" width="100px" />
-              <GridColumn field="terrName" title="Terr Name" width="160px" />
-              <GridColumn field="index" title="Index" width="90px" />
-              <GridColumn field="estr_writer" title="estr_writer" width="120px" />
-              <GridColumn field="mkt_writer" title="mkt_writer" width="120px" />
-              <GridColumn field="estr_c12m" title="estr_c12m" width="120px" />
-              <GridColumn field="mkt_C12m" title="mkt_C12m" width="120px" />
-              <GridColumn field="stCity" title="stCity" width="160px" />
-              <GridColumn field="zipOut" title="Zip" width="100px" />
+            <Grid
+              data={zipResult.data}
+              size="small"
+              className="compact-grid"
+              style={{ height: '100%' }}
+              sortable
+              resizable
+              sort={zipSort}
+              onSortChange={(e) => setZipSort(e.sort)}
+              filter={zipFilter}
+              onFilterChange={(e) => setZipFilter(e.filter ?? undefined)}
+            >
+              <GridColumn field="zip" title="Zip" width="100px" columnMenu={ColumnMenu} />
+              <GridColumn field="terrId" title="Terr ID" width="100px" columnMenu={ColumnMenu} />
+              <GridColumn field="terrName" title="Terr Name" width="160px" columnMenu={ColumnMenu} />
+              <GridColumn field="index" title="Index" width="90px" columnMenu={ColumnMenu} />
+              <GridColumn field="estr_writer" title="estr_writer" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="mkt_writer" title="mkt_writer" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="estr_c12m" title="estr_c12m" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="mkt_C12m" title="mkt_C12m" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="stCity" title="stCity" width="160px" columnMenu={ColumnMenu} />
+              <GridColumn field="zipOut" title="Zip" width="100px" columnMenu={ColumnMenu} />
             </Grid>
           </Window>
         )}
@@ -454,20 +488,31 @@ export default function StackedWindows() {
             onMove={onMove(setHcp)}
             onResize={onResize(setHcp)}
           >
-            <Grid data={HCP_DATA} size="small" className="compact-grid" style={{ height: '100%' }}>
-              <GridColumn field="id" title="id" width="100px" />
-              <GridColumn field="fname" title="Fname" width="110px" />
-              <GridColumn field="lname" title="Lname" width="120px" />
-              <GridColumn field="decMkt" title="decMkt" width="90px" />
-              <GridColumn field="mkt_roll12" title="mkt_roll12" width="120px" />
-              <GridColumn field="ESTR_roll12" title="ESTR_roll12" width="120px" />
-              <GridColumn field="MENA_roll12" title="MENA_roll12" width="130px" />
-              <GridColumn field="PROF_roll12" title="PROF_roll12" width="120px" />
-              <GridColumn field="Address1" title="Address1" width="220px" />
-              <GridColumn field="City" title="City" width="140px" />
-              <GridColumn field="State" title="State" width="80px" />
-              <GridColumn field="zip" title="zip" width="90px" />
-              <GridColumn field="NPI" title="NPI" width="130px" />
+            <Grid
+              data={hcpResult.data}
+              size="small"
+              className="compact-grid"
+              style={{ height: '100%' }}
+              sortable
+              resizable
+              sort={hcpSort}
+              onSortChange={(e) => setHcpSort(e.sort)}
+              filter={hcpFilter}
+              onFilterChange={(e) => setHcpFilter(e.filter ?? undefined)}
+            >
+              <GridColumn field="id" title="id" width="100px" columnMenu={ColumnMenu} />
+              <GridColumn field="fname" title="Fname" width="110px" columnMenu={ColumnMenu} />
+              <GridColumn field="lname" title="Lname" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="decMkt" title="decMkt" width="90px" columnMenu={ColumnMenu} />
+              <GridColumn field="mkt_roll12" title="mkt_roll12" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="ESTR_roll12" title="ESTR_roll12" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="MENA_roll12" title="MENA_roll12" width="130px" columnMenu={ColumnMenu} />
+              <GridColumn field="PROF_roll12" title="PROF_roll12" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="Address1" title="Address1" width="220px" columnMenu={ColumnMenu} />
+              <GridColumn field="City" title="City" width="140px" columnMenu={ColumnMenu} />
+              <GridColumn field="State" title="State" width="80px" columnMenu={ColumnMenu} />
+              <GridColumn field="zip" title="zip" width="90px" columnMenu={ColumnMenu} />
+              <GridColumn field="NPI" title="NPI" width="130px" columnMenu={ColumnMenu} />
             </Grid>
           </Window>
         )}
@@ -490,19 +535,30 @@ export default function StackedWindows() {
             onMove={onMove(setAcc)}
             onResize={onResize(setAcc)}
           >
-            <Grid data={ACC_DATA} size="small" className="compact-grid" style={{ height: '100%' }}>
-              <GridColumn field="origTerr" title="Original Terr" width="130px" />
-              <GridColumn field="origName" title="Original Name" width="150px" />
-              <GridColumn field="newTerr" title="New Terr" width="110px" />
-              <GridColumn field="newName" title="New Name" width="150px" />
-              <GridColumn field="id" title="ID" width="90px" />
-              <GridColumn field="lname" title="L Name" width="120px" />
-              <GridColumn field="fname" title="F Name" width="120px" />
-              <GridColumn field="spec" title="Spec" width="100px" />
-              <GridColumn field="decMkt" title="decMkt" width="90px" />
-              <GridColumn field="mkt_roll12" title="mkt_roll12" width="120px" />
-              <GridColumn field="ESTR_roll12" title="ESTR_roll12" width="120px" />
-              <GridColumn field="MENA_roll12" title="MENA_roll12" width="130px" />
+            <Grid
+              data={accResult.data}
+              size="small"
+              className="compact-grid"
+              style={{ height: '100%' }}
+              sortable
+              resizable
+              sort={accSort}
+              onSortChange={(e) => setAccSort(e.sort)}
+              filter={accFilter}
+              onFilterChange={(e) => setAccFilter(e.filter ?? undefined)}
+            >
+              <GridColumn field="origTerr" title="Original Terr" width="130px" columnMenu={ColumnMenu} />
+              <GridColumn field="origName" title="Original Name" width="150px" columnMenu={ColumnMenu} />
+              <GridColumn field="newTerr" title="New Terr" width="110px" columnMenu={ColumnMenu} />
+              <GridColumn field="newName" title="New Name" width="150px" columnMenu={ColumnMenu} />
+              <GridColumn field="id" title="ID" width="90px" columnMenu={ColumnMenu} />
+              <GridColumn field="lname" title="L Name" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="fname" title="F Name" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="spec" title="Spec" width="100px" columnMenu={ColumnMenu} />
+              <GridColumn field="decMkt" title="decMkt" width="90px" columnMenu={ColumnMenu} />
+              <GridColumn field="mkt_roll12" title="mkt_roll12" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="ESTR_roll12" title="ESTR_roll12" width="120px" columnMenu={ColumnMenu} />
+              <GridColumn field="MENA_roll12" title="MENA_roll12" width="130px" columnMenu={ColumnMenu} />
             </Grid>
           </Window>
         )}
