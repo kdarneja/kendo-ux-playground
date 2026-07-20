@@ -18,6 +18,15 @@ _Last updated: 2026-07-20_
 4. **Grey canvas + DropDownList sub-view nav** — commit `3b00537`
    - Home and App Visualizations page background = `#F1F1F1` (literal hex stopgap until the ThemeBuilder Kendo theme lands); Home launcher cards = white.
    - App Visualizations: Example 1/2/3 `TabStrip` replaced with a navy filled `DropDownList` (the set pattern for in-page sub-view navigation); popup highlights the active item navy. Removed unused TabStrip import + `.av-tabs` CSS.
+5. **Polish** — commit `1d0a0bb`
+   - App Visualizations: view-changer bar made transparent so the whole page reads as one `#F1F1F1` canvas (no white strip behind the dropdown).
+   - Home launcher cards: added `--kendo-elevation-1` shadow.
+
+## Git authorship fix (this session)
+
+- 24 commits (from `61f3327` to the old tip `5763b5e`) were authored by `KD <kd@resonata.health>`. Rewrote author + committer on all of them to `kdarneja <kd.singh@beghou.com>` via `git filter-branch`, then force-pushed. Trees byte-identical; only authorship changed. Hashes changed — other clones need `git reset --hard origin/main`.
+- Backup branch `backup-before-author-fix` (old tip `5763b5e`, still resonata) kept locally, not pushed. Delete once no longer needed.
+- **Root cause still open:** global git config is `KD <kd@resonata.health>`. This repo commits correctly only because it has a local override. KD works across both resonata and beghou, so he plans to empty the global identity (`git config --global --unset user.name/email` + `user.useConfigOnly true`) and/or set up `includeIf` per-folder identities. Not yet done.
 
 Working tree clean (aside from the untracked `1alias`).
 
