@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import type { SVGIcon } from '@progress/kendo-svg-icons';
-import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon, gridLayoutIcon, calendarIcon, chartBarStackedIcon, dashboardIcon, chartColumnClusteredIcon } from '@progress/kendo-svg-icons';
+import { homeIcon, windowIcon, toolbarFloatIcon, volumeUpIcon, gridLayoutIcon, calendarIcon, chartBarStackedIcon, dashboardIcon, chartColumnClusteredIcon, userIcon } from '@progress/kendo-svg-icons';
 
 import Home from './pages/Home';
 import StackedWindows from './pages/StackedWindows';
@@ -11,6 +11,7 @@ import Calendar from './pages/Calendar';
 import LaunchPlanning from './pages/LaunchPlanning';
 import SmallCalendar from './pages/SmallCalendar';
 import AppVisualizations from './pages/AppVisualizations';
+import EditProductRoles from './pages/EditProductRoles';
 
 export type RouteDef = {
   path: string;
@@ -83,5 +84,12 @@ export const routes: RouteDef[] = [
     icon: chartColumnClusteredIcon,
     description: 'Best-practice examples of Kendo charts rendered inside app pages.',
     component: AppVisualizations,
+  },
+  {
+    path: '/edit-product-roles',
+    label: 'Edit Product Roles',
+    icon: userIcon,
+    description: 'Redesigned single-dialog flow for assigning roles and their inline properties.',
+    component: EditProductRoles,
   },
 ];

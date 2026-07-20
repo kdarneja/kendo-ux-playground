@@ -2041,3 +2041,219 @@ a {
     flex-basis: auto;
   }
 }
+
+/* ---------- Edit Product Roles dialog ---------- */
+/* Inherits the .mv-dialog chrome (tinted titlebar/footer, navy title, brand
+   outline buttons). This block styles the body: Users field + the inline
+   expand/collapse role list. */
+.epr-dialog .k-window-content,
+.epr-dialog .k-dialog-content {
+  padding: 0;
+  max-height: min(80vh, 760px);
+  overflow-y: auto;
+}
+
+.epr-body {
+  padding: 20px 24px 8px;
+  background: var(--beghou-surface-app);
+}
+
+.epr-block {
+  margin-bottom: 20px;
+}
+
+.epr-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--beghou-navy);
+  margin-bottom: 8px;
+}
+
+.epr-users-input.k-input,
+.epr-input.k-input {
+  background: var(--beghou-surface-app);
+}
+
+/* Product Roles header: label on the left, Add-role dropdown on the right. */
+.epr-roles-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+.epr-roles-head .epr-label {
+  margin-bottom: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.epr-add-role.k-dropdownlist {
+  min-width: 220px;
+  background: var(--beghou-surface-app);
+}
+
+.epr-help {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--beghou-navy);
+  opacity: 0.6;
+}
+
+.epr-roles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Empty state: no roles assigned yet. */
+.epr-empty {
+  border: 1px dashed var(--border-container);
+  border-radius: 4px;
+  padding: 20px 16px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--beghou-navy);
+  opacity: 0.55;
+}
+
+/* Collapsed role row: white card with a subtle border. */
+.epr-role {
+  border: 1px solid var(--border-container);
+  border-radius: 4px;
+  background: var(--beghou-surface-app);
+  overflow: hidden;
+}
+/* Expanded row: signature card tint wraps header + body. */
+.epr-role--open {
+  background: var(--beghou-surface-card);
+  border-color: var(--beghou-border-alt);
+}
+
+.epr-role-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.epr-role-head:focus-visible {
+  outline: 2px solid var(--beghou-focus-ring);
+  outline-offset: -2px;
+}
+
+.epr-role-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--beghou-navy);
+}
+
+.epr-role-head-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.epr-role-summary {
+  font-size: 14px;
+  color: var(--beghou-navy);
+  opacity: 0.55;
+}
+.epr-role-summary--set {
+  opacity: 0.7;
+}
+
+.epr-chevron {
+  color: var(--beghou-navy);
+  width: 14px;
+  height: 14px;
+}
+
+/* Flat icon buttons (remove role, clear property) — navy, no chrome. */
+.epr-icon-btn.k-button {
+  color: var(--beghou-navy);
+  padding: 4px;
+  min-width: 0;
+}
+
+.epr-role-body {
+  padding: 0 14px 14px;
+}
+
+/* Empty state: white inner card holding the inline Key/Value form. */
+.epr-form-card {
+  background: var(--beghou-surface-app);
+  border: 1px solid var(--border-container);
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.epr-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.epr-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.epr-field-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--beghou-navy);
+  opacity: 0.7;
+}
+.epr-req {
+  color: var(--kendo-color-error, #d13438);
+  opacity: 1;
+}
+
+.epr-input.k-input {
+  width: 100%;
+}
+
+/* Value column in the property-set state: input + inline clear button. */
+.epr-value-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.epr-value-row .epr-input {
+  flex: 1;
+}
+
+.epr-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+.epr-form-actions .k-button-flat {
+  color: var(--beghou-navy);
+  font-weight: 700;
+}
+/* Disabled "Save property": muted gray fill so the enabled/disabled contrast
+   reads clearly (Kendo's default disabled primary stays too navy here). */
+.epr-form-actions .k-button-solid-primary:disabled,
+.epr-form-actions .k-button-solid-primary.k-disabled {
+  background: var(--beghou-neutral-200);
+  border-color: var(--beghou-neutral-200);
+  color: var(--beghou-surface-app);
+  opacity: 1;
+}
+
+.epr-form-note {
+  margin: 10px 2px 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--beghou-navy);
+  opacity: 0.55;
+}
