@@ -16,8 +16,7 @@ import {
   ChartLegendItem,
   ChartTooltip,
 } from '@progress/kendo-react-charts';
-import { TabStrip, TabStripTab } from '@progress/kendo-react-layout';
-import { DropDownList } from '@progress/kendo-react-dropdowns';
+import { DropDownList, type DropDownListChangeEvent } from '@progress/kendo-react-dropdowns';
 import { DatePicker } from '@progress/kendo-react-dateinputs';
 import { Button, ButtonGroup, SplitButton } from '@progress/kendo-react-buttons';
 import { Grid, GridColumn, type GridCellProps, type GridPageChangeEvent } from '@progress/kendo-react-grid';
@@ -45,9 +44,12 @@ const circleLegend = (e: any) => {
 
 /**
  * App Visualizations — a dev-facing spec for how charts render inside an app.
- * Two example page views (tabs), all built with Kendo Charts on a full-bleed
- * white canvas with elevated cards. Filters and drill-downs are visual only.
+ * Three example page views, switched via a DropDownList (the set pattern for
+ * sub-view navigation within a page). All built with Kendo Charts on a grey
+ * canvas with elevated white cards. Filters and drill-downs are visual only.
  */
+
+const VIEW_OPTIONS = ['Example 1', 'Example 2', 'Example 3'];
 
 const COLOR = {
   attainment: '#2e9b51',
@@ -376,22 +378,34 @@ const HANDOFF_NOTES = [
 ];
 
 export default function AppVisualizations() {
-  const [selected, setSelected] = useState(0);
+  const [view, setView] = useState<string>(VIEW_OPTIONS[0]);
   const [notesOpen, setNotesOpen] = useState(false);
   const notesAnchor = useRef<HTMLDivElement>(null);
 
   return (
     <div className="beghou-page av-page">
-      <div className="av-notes-anchor" ref={notesAnchor}>
-        <Button
-          fillMode="flat"
-          svgIcon={infoCircleIcon}
-          className="av-notes-btn"
-          onClick={() => setNotesOpen((v) => !v)}
-        >
-          Developer Handoff Notes
-        </Button>
+      {/* Sub-view navigation: a DropDownList, the set pattern for switching
+          views within a single page. */}
+      <div className="av-subnav">
+        <DropDownList
+          className="av-viewnav"
+          data={VIEW_OPTIONS}
+          value={view}
+          onChange={(e: DropDownListChangeEvent) => setView(String(e.value))}
+          popupSettings={{ className: 'av-viewnav-popup' }}
+        />
+        <div className="av-notes-anchor" ref={notesAnchor}>
+          <Button
+            fillMode="flat"
+            svgIcon={infoCircleIcon}
+            className="av-notes-btn"
+            onClick={() => setNotesOpen((v) => !v)}
+          >
+            Developer Handoff Notes
+          </Button>
+        </div>
       </div>
+
       <Popup
         anchor={notesAnchor.current}
         show={notesOpen}
@@ -409,17 +423,9 @@ export default function AppVisualizations() {
         </div>
       </Popup>
 
-      <TabStrip selected={selected} onSelect={(e) => setSelected(e.selected)} className="av-tabs">
-        <TabStripTab title="Example 1">
-          <SalesTab />
-        </TabStripTab>
-        <TabStripTab title="Example 2">
-          <DataQualityTab />
-        </TabStripTab>
-        <TabStripTab title="Example 3">
-          <SalesTab surface="grey" />
-        </TabStripTab>
-      </TabStrip>
+      {view === 'Example 1' && <SalesTab />}
+      {view === 'Example 2' && <DataQualityTab />}
+      {view === 'Example 3' && <SalesTab surface="grey" />}
     </div>
   );
 }

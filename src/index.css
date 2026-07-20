@@ -495,6 +495,12 @@ a {
 }
 
 /* ---------- Home launcher ---------- */
+/* Grey app canvas (new design system); cards sit on top as white. */
+.beghou-home {
+  min-height: 100%;
+  background: #f1f1f1;
+}
+
 .beghou-launcher-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -502,7 +508,7 @@ a {
 }
 
 .beghou-launcher-card {
-  background: var(--beghou-surface-card);
+  background: #ffffff;
   border: 1px solid var(--border-container);
   border-radius: 4px;
   padding: 16px;
@@ -1772,20 +1778,64 @@ a {
 }
 
 /* ---------- App Visualizations (chart spec) ---------- */
-/* Full-bleed white canvas; charts live in elevated cards. */
+/* Grey app canvas (new design system); charts live in elevated white cards. */
 .av-page {
-  background: #ffffff;
+  background: #f1f1f1;
   padding: 0;
   height: 100%;
   overflow: auto;
   position: relative;
 }
 
-/* Developer Handoff Notes — text button to the right of the tab row. */
+/* Sub-view nav bar: DropDownList on the left, Handoff Notes button on the
+   right, on a white strip above the content. */
+.av-subnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #ffffff;
+  padding: 10px 16px 10px 20px;
+}
+
+/* View selector: navy filled dropdown (matches the set sub-view nav pattern). */
+.av-viewnav.k-dropdownlist {
+  width: 220px;
+  flex: 0 0 auto;
+  background: var(--beghou-navy);
+  border-color: var(--beghou-navy);
+  color: var(--beghou-on-navy);
+  font-weight: 600;
+}
+.av-viewnav.k-dropdownlist .k-input-value-text {
+  color: var(--beghou-on-navy);
+}
+.av-viewnav.k-dropdownlist .k-input-button,
+.av-viewnav.k-dropdownlist .k-button-icon {
+  color: var(--beghou-on-navy);
+}
+.av-viewnav.k-dropdownlist:hover,
+.av-viewnav.k-dropdownlist.k-focus {
+  background: var(--beghou-navy-hover);
+  border-color: var(--beghou-navy-hover);
+}
+/* Popup: white list, navy full-width highlight on the selected/hovered item. */
+.av-viewnav-popup .k-list-item {
+  color: var(--beghou-navy);
+}
+.av-viewnav-popup .k-list-item.k-selected {
+  background: var(--beghou-navy);
+  color: var(--beghou-on-navy);
+}
+.av-viewnav-popup .k-list-item.k-selected:hover {
+  background: var(--beghou-navy-hover);
+}
+.av-viewnav-popup .k-list-item:hover:not(.k-selected) {
+  background: var(--beghou-surface-card);
+}
+
+/* Developer Handoff Notes — text button anchored right of the sub-view nav. */
 .av-notes-anchor {
-  position: absolute;
-  top: 3px;
-  right: 16px;
   z-index: 2;
 }
 .av-notes-btn.k-button {
@@ -1814,26 +1864,6 @@ a {
   font-size: 13px;
   line-height: 1.45;
   color: var(--beghou-navy);
-}
-.av-tabs.k-tabstrip {
-  border: 0;
-}
-.av-tabs .k-tabstrip-items-wrapper {
-  background: #ffffff;
-  padding: 0 20px;
-}
-.av-tabs .k-tabstrip-content,
-.av-tabs .k-tabstrip > .k-content {
-  border: 0;
-  background: transparent;
-  padding: 0;
-}
-/* Kendo wraps tab content in an inline-block animation container that
-   shrink-wraps to content; force it full width so grids can fill. */
-.av-tabs .k-animation-container,
-.av-tabs .k-child-animation-container {
-  display: block;
-  width: 100%;
 }
 
 /* Card chrome: 1px border + elevation shadow on white. */

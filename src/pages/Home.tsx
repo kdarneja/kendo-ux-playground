@@ -5,7 +5,7 @@ export default function Home() {
   const launcherRoutes = routes.filter((r) => r.path !== '/');
 
   return (
-    <div className="beghou-page">
+    <div className="beghou-page beghou-home">
       <div className="beghou-launcher-grid">
         {launcherRoutes.map((r) => (
           <Link key={r.path} to={r.path} className="beghou-launcher-card">
