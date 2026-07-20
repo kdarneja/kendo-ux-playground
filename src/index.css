@@ -518,6 +518,7 @@ a {
   gap: 8px;
   text-decoration: none;
   color: var(--beghou-navy);
+  box-shadow: var(--kendo-elevation-1);
   transition: box-shadow 150ms ease, transform 150ms ease;
 }
 
@@ -1794,7 +1795,7 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: #ffffff;
+  background: transparent;
   padding: 10px 16px 10px 20px;
 }
 
