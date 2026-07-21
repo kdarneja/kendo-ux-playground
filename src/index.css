@@ -1438,6 +1438,7 @@ a {
 .sc-page {
   padding: 24px 16px;
   min-height: 0;
+  background: #f1f1f1;
 }
 
 /* Cards fill the left and wrap; the calendar takes whatever's left on the
@@ -1465,13 +1466,14 @@ a {
   gap: 16px;
 }
 
-/* Empty card placeholders — real cards land here later. */
+/* Empty card placeholders — real cards land here later. Match the landing-page
+   launcher cards (white, solid border, 4px radius, elevation-1), just no data. */
 .sc-card-placeholder.k-card {
   height: 180px;
-  border: 1px dashed var(--border-container);
-  background: var(--beghou-surface-card);
-  border-radius: 8px;
-  box-shadow: none;
+  border: 1px solid var(--border-container);
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow: var(--kendo-elevation-1);
 }
 
 /* Calendar column: ~250px floor (249 so three 354px cards + 16px gutters fit
@@ -1487,11 +1489,11 @@ a {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: var(--beghou-surface-card);
+  background: #ffffff;
   border: 1px solid var(--border-container);
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 16px;
-  box-shadow: 0 2px 8px rgba(2, 4, 52, 0.06);
+  box-shadow: var(--kendo-elevation-1);
 }
 
 /* --- Calendar header (custom; Kendo's own header is hidden below) --- */
