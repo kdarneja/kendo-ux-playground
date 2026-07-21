@@ -21,6 +21,10 @@ _Last updated: 2026-07-20_
 5. **Polish** — commit `1d0a0bb`
    - App Visualizations: view-changer bar made transparent so the whole page reads as one `#F1F1F1` canvas (no white strip behind the dropdown).
    - Home launcher cards: added `--kendo-elevation-1` shadow.
+6. **Small Calendar restyle** — commit `63a5f94`
+   - Page background `#F1F1F1`. Empty card placeholders now match the landing launcher cards (white, solid 1px border, 4px radius, `--kendo-elevation-1`, no data). Calendar widget: white background + `--kendo-elevation-1`.
+
+**Established pattern:** grey `#F1F1F1` app canvas + white cards with `--kendo-elevation-1` + 1px `--border-container` + 4px radius. Now on Home, App Visualizations, and Small Calendar.
 
 ## Git authorship fix (this session)
 
